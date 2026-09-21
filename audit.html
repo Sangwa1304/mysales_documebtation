@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Audit — MYSALES</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="app-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"> M </span>
+
+        <span>
+          <strong> MYSALES </strong>
+
+          <small> Gestion commerciale </small>
+        </span>
+      </a>
+
+      <nav id="mainNav">
+        <a href="index.html"> Tableau de bord </a>
+
+        <a href="ventes.html"> Ventes </a>
+
+        <a href="produits.html"> Produits </a>
+
+        <a href="clients.html"> Clients </a>
+
+        <a href="stock.html"> Stock </a>
+
+        <a href="dashboard.html"> Rapports </a>
+
+        <a class="active" href="audit.html"> Audit </a>
+      </nav>
+
+      <div class="header-user">
+        <span id="nomUtilisateur"> ... </span>
+
+        <small id="roleUtilisateur"> Administrateur </small>
+
+        <button id="boutonDeconnexion" class="btn btn-light">
+          Déconnexion
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <section class="page-top">
+        <div>
+          <span class="eyebrow"> SÉCURITÉ & TRAÇABILITÉ </span>
+
+          <h1>Journal d'audit</h1>
+
+          <p class="muted">
+            Toutes les opérations importantes effectuées dans MYSALES sont
+            enregistrées ici.
+          </p>
+        </div>
+
+        <button id="btnActualiser" class="btn btn-primary">Actualiser</button>
+      </section>
+
+      <section class="toolbar">
+        <input
+          type="text"
+          id="rechercheAudit"
+          placeholder="Rechercher un utilisateur, une action, une route..."
+        />
+
+        <select id="filtreAction">
+          <option value="">Toutes les actions</option>
+
+          <option value="CONNEXION">Connexions</option>
+
+          <option value="DECONNEXION">Déconnexions</option>
+
+          <option value="CREATION_UTILISATEUR">Création utilisateur</option>
+
+          <option value="MODIFICATION_UTILISATEUR">
+            Modification utilisateur
+          </option>
+
+          <option value="SUPPRESSION_UTILISATEUR">
+            Suppression utilisateur
+          </option>
+
+          <option value="CREATION_CLIENT">Création client</option>
+
+          <option value="MODIFICATION_CLIENT">Modification client</option>
+
+          <option value="SUPPRESSION_CLIENT">Suppression client</option>
+
+          <option value="CREATION_PRODUIT">Création produit</option>
+
+          <option value="MODIFICATION_PRODUIT">Modification produit</option>
+
+          <option value="SUPPRESSION_PRODUIT">Suppression produit</option>
+
+          <option value="MODIFICATION_STOCK">Modification stock</option>
+
+          <option value="CREATION_VENTE">Création vente</option>
+        </select>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow"> ACTIVITÉ EN TEMPS RÉEL </span>
+
+            <h2>Historique des opérations</h2>
+          </div>
+
+          <span id="compteurAudit" class="badge"> 0 opération </span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date & heure</th>
+
+                <th>Utilisateur</th>
+
+                <th>Action</th>
+
+                <th>Méthode</th>
+
+                <th>Route</th>
+
+                <th>Statut</th>
+
+                <th>Adresse IP</th>
+              </tr>
+            </thead>
+
+            <tbody id="auditList">
+              <tr>
+                <td colspan="7">Chargement du journal d'audit...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="audit.js"></script>
+  </body>
+</html>

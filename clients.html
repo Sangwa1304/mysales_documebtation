@@ -5,118 +5,175 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>MYSALES - Clients</title>
+    <title>Clients — MYSALES</title>
 
     <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <header>
-      <h1>MYSALES</h1>
+    <header class="app-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">M</span>
 
-      <nav>
-        <a href="index.html"> Accueil </a>
+        <span>
+          <strong>MYSALES</strong>
+          <small>Gestion commerciale</small>
+        </span>
+      </a>
 
-        <a href="clients.html"> Clients </a>
-
-        <a href="produits.html"> Produits </a>
+      <nav id="mainNav">
+        <a href="index.html"> Tableau de bord </a>
 
         <a href="ventes.html"> Ventes </a>
 
-        <a href="dashboard.html"> Dashboard </a>
+        <a href="produits.html"> Produits </a>
+
+        <a class="active" href="clients.html"> Clients </a>
+
+        <a href="dashboard.html"> Rapports </a>
       </nav>
+
+      <div class="header-user">
+        <span id="nomUtilisateur">...</span>
+
+        <small id="roleUtilisateur">...</small>
+
+        <button id="boutonDeconnexion" class="btn btn-light" type="button">
+          Déconnexion
+        </button>
+      </div>
     </header>
 
-    <main>
-      <section class="page-header">
-        <h2>Gestion des clients</h2>
+    <main class="app-main">
+      <section class="page-top">
+        <div>
+          <span class="eyebrow"> CLIENTÈLE </span>
 
-        <p>Ajoutez, recherchez, modifiez et supprimez vos clients.</p>
+          <h1>Gestion des clients</h1>
+
+          <p class="muted">
+            Gérez vos clients et leurs informations commerciales.
+          </p>
+        </div>
+
+        <button id="btnNouveauClient" class="btn btn-primary" type="button">
+          + Ajouter un client
+        </button>
       </section>
 
-      <!-- =========================
-             FORMULAIRE
-        ========================== -->
-
-      <section class="form-section">
-        <h3>Ajouter un client</h3>
-
-        <form id="clientForm">
-          <div>
-            <label for="nomComplet"> Nom complet </label>
-
-            <input type="text" id="nomComplet" required />
-          </div>
-
-          <div>
-            <label for="telephone"> Téléphone </label>
-
-            <input type="text" id="telephone" required />
-          </div>
-
-          <div>
-            <label for="email"> Email </label>
-
-            <input type="email" id="email" />
-          </div>
-
-          <div>
-            <label for="ville"> Ville </label>
-
-            <input type="text" id="ville" />
-          </div>
-
-          <button type="submit">Enregistrer le client</button>
-        </form>
-      </section>
-
-      <!-- =========================
-             RECHERCHE
-        ========================== -->
-
-      <section class="form-section">
-        <h3>Rechercher un client</h3>
-
+      <section class="toolbar">
         <input
           type="text"
           id="rechercheClient"
-          placeholder="Nom, téléphone ou ville..."
+          placeholder="Rechercher un client..."
         />
       </section>
 
-      <!-- =========================
-             TABLEAU CLIENTS
-        ========================== -->
+      <section id="formulaireClient" class="panel" hidden>
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow"> CLIENT </span>
 
-      <section class="table-section">
-        <h3>Liste des clients</h3>
+            <h2 id="titreFormulaireClient">Ajouter un client</h2>
+          </div>
+        </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
+        <form id="clientForm" class="grid-form">
+          <label>
+            Nom complet
 
-              <th>Nom complet</th>
+            <input
+              type="text"
+              id="nomClient"
+              placeholder="Ex : Jean Kabila"
+              required
+            />
+          </label>
 
-              <th>Téléphone</th>
+          <label>
+            Téléphone
 
-              <th>Email</th>
+            <input
+              type="text"
+              id="telephoneClient"
+              placeholder="Ex : 0810000001"
+              required
+            />
+          </label>
 
-              <th>Ville</th>
+          <label>
+            Adresse e-mail
 
-              <th>Actions</th>
-            </tr>
-          </thead>
+            <input
+              type="email"
+              id="emailClient"
+              placeholder="client@email.com"
+            />
+          </label>
 
-          <tbody id="clientsList">
-            <tr>
-              <td colspan="6">Chargement...</td>
-            </tr>
-          </tbody>
-        </table>
+          <label>
+            Ville
+
+            <input type="text" id="villeClient" placeholder="Ex : Kinshasa" />
+          </label>
+
+          <div class="form-actions">
+            <button
+              class="btn btn-primary"
+              type="submit"
+              id="btnEnregistrerClient"
+            >
+              Enregistrer
+            </button>
+
+            <button class="btn btn-light" type="button" id="btnAnnulerClient">
+              Annuler
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow"> BASE CLIENTS </span>
+
+            <h2>Clients</h2>
+          </div>
+
+          <span id="compteurClients" class="badge"> 0 client </span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+
+                <th>Téléphone</th>
+
+                <th>E-mail</th>
+
+                <th>Ville</th>
+
+                <th>Date</th>
+
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="clientsList">
+              <tr>
+                <td colspan="6">Chargement...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="clients.js"></script>
+
+    <script src="auth.js"></script>
   </body>
 </html>

@@ -2,190 +2,270 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>MYSALES - Dashboard</title>
+    <title>Dashboard — MYSALES</title>
 
     <link rel="stylesheet" href="style.css" />
 
-    <!-- Bibliothèque pour les graphiques -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
   <body>
-    <header class="header">
-      <div class="logo">MYSALES</div>
+    <header class="app-header">
+      <a class="brand" href="dashboard.html">
+        <span class="brand-mark">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path
+              d="M8 27V13L14 20L20 11L26 20L32 13V27"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
 
-      <nav>
-        <a href="index.html">Accueil</a>
-        <a href="clients.html">Clients</a>
-        <a href="produits.html">Produits</a>
-        <a href="ventes.html">Ventes</a>
-        <a href="dashboard.html">Dashboard</a>
+        <span>
+          <strong>MYSALES</strong>
+          <small>Gestion commerciale</small>
+        </span>
+      </a>
+
+      <nav id="mainNav">
+        <a href="dashboard.html" class="active"> Dashboard </a>
+
+        <a href="ventes.html"> Ventes </a>
+
+        <a href="clients.html"> Clients </a>
+
+        <a href="produits.html"> Produits </a>
+
+        <a href="stock.html" class="admin-only"> Stock </a>
+
+        <a href="utilisateurs.html" class="admin-only"> Utilisateurs </a>
+
+        <a href="audit.html" class="admin-only"> Audit </a>
       </nav>
 
-      <div class="user-menu">
-        <div class="user-info">
-          <strong id="nomUtilisateur">Chargement...</strong>
-          <span id="roleUtilisateur"></span>
+      <div class="header-user">
+        <div class="header-avatar">
+          <span id="avatarUtilisateur">U</span>
         </div>
 
-        <button type="button" id="boutonDeconnexion">Déconnexion</button>
+        <div class="header-user-info">
+          <strong id="nomUtilisateur"> Utilisateur </strong>
+
+          <small id="roleUtilisateur"> Vendeur </small>
+        </div>
+
+        <button id="boutonDeconnexion" class="btn btn-logout" type="button">
+          <span>↪</span>
+          Déconnexion
+        </button>
       </div>
     </header>
 
-    <main id="dashboard">
-      <!-- =========================
-           EN-TÊTE
-      ========================== -->
+    <main class="app-main dashboard-page">
+      <!-- ==================================================
+         EN-TÊTE
+    =================================================== -->
 
-      <section class="page-header dashboard-intro">
+      <section class="page-top dashboard-heading">
         <div>
-          <span class="dashboard-badge">TABLEAU DE BORD</span>
+          <span class="eyebrow"> TABLEAU DE BORD </span>
 
-          <h2>Dashboard commercial</h2>
+          <h1>Vue d'ensemble</h1>
 
-          <p>
-            Suivez les performances commerciales, les ventes, les produits et
-            les stocks de MYSALES.
+          <p class="muted">
+            Suivez les performances commerciales de votre entreprise depuis un
+            seul espace.
           </p>
         </div>
 
         <button
           type="button"
           id="boutonActualiserDashboard"
-          class="dashboard-refresh"
+          class="btn btn-primary"
         >
-          ↻ Actualiser
+          <span>↻</span>
+          Actualiser
         </button>
       </section>
 
-      <!-- =========================
-           KPI
-      ========================== -->
+      <!-- ==================================================
+         KPI
+    =================================================== -->
 
-      <section class="dashboard-cards">
-        <div class="dashboard-card dashboard-card-primary">
-          <span class="dashboard-card-label">CHIFFRE D'AFFAIRES</span>
+      <section class="dashboard-kpis">
+        <article class="kpi-card kpi-blue">
+          <div class="kpi-top">
+            <span class="kpi-label"> Chiffre d'affaires </span>
 
-          <h3>CA total</h3>
+            <span class="kpi-icon"> $ </span>
+          </div>
 
-          <p id="chiffreAffaires">Chargement...</p>
-        </div>
+          <strong id="chiffreAffaires" class="kpi-value"> 0.00 $ </strong>
 
-        <div class="dashboard-card">
-          <span class="dashboard-card-label">ACTIVITÉ</span>
+          <span class="kpi-description"> Total des ventes enregistrées </span>
+        </article>
 
-          <h3>Nombre de ventes</h3>
+        <article class="kpi-card kpi-green">
+          <div class="kpi-top">
+            <span class="kpi-label"> Ventes </span>
 
-          <p id="nombreVentes">Chargement...</p>
-        </div>
+            <span class="kpi-icon"> ↗ </span>
+          </div>
 
-        <div class="dashboard-card">
-          <span class="dashboard-card-label">PRODUITS</span>
+          <strong id="nombreVentes" class="kpi-value"> 0 </strong>
 
-          <h3>Produits vendus</h3>
+          <span class="kpi-description"> Transactions enregistrées </span>
+        </article>
 
-          <p id="produitsVendus">Chargement...</p>
-        </div>
+        <article class="kpi-card kpi-purple">
+          <div class="kpi-top">
+            <span class="kpi-label"> Produits vendus </span>
 
-        <div class="dashboard-card">
-          <span class="dashboard-card-label">CLIENTS</span>
+            <span class="kpi-icon"> ◈ </span>
+          </div>
 
-          <h3>Clients</h3>
+          <strong id="produitsVendus" class="kpi-value"> 0 </strong>
 
-          <p id="nombreClients">Chargement...</p>
-        </div>
+          <span class="kpi-description"> Quantités vendues </span>
+        </article>
+
+        <article class="kpi-card kpi-orange">
+          <div class="kpi-top">
+            <span class="kpi-label"> Clients </span>
+
+            <span class="kpi-icon"> ● </span>
+          </div>
+
+          <strong id="nombreClients" class="kpi-value"> 0 </strong>
+
+          <span class="kpi-description"> Clients enregistrés </span>
+        </article>
       </section>
 
-      <!-- =========================
-           GRAPHIQUES
-      ========================== -->
+      <!-- ==================================================
+         PREMIÈRE LIGNE DE GRAPHIQUES
+    =================================================== -->
 
-      <section class="dashboard-section-title">
-        <span>ANALYSE COMMERCIALE</span>
-        <h2>Performance des ventes</h2>
-      </section>
-
-      <section class="dashboard-charts">
-        <div class="chart-container">
-          <div class="chart-header">
+      <section class="dashboard-chart-grid dashboard-chart-grid-main">
+        <article class="dashboard-panel chart-panel chart-wide">
+          <div class="panel-header">
             <div>
-              <span>ÉVOLUTION</span>
-              <h3>Chiffre d'affaires</h3>
+              <span class="panel-eyebrow"> PERFORMANCE </span>
+
+              <h2>Évolution du chiffre d'affaires</h2>
+
+              <p>Suivi du chiffre d'affaires dans le temps.</p>
             </div>
           </div>
 
-          <div class="chart-wrapper">
+          <div class="chart-box chart-large">
             <canvas id="caChart"></canvas>
           </div>
-        </div>
+        </article>
 
-        <div class="chart-container">
-          <div class="chart-header">
+        <article class="dashboard-panel chart-panel">
+          <div class="panel-header">
             <div>
-              <span>PRODUITS</span>
-              <h3>Produits les plus vendus</h3>
+              <span class="panel-eyebrow"> RÉPARTITION </span>
+
+              <h2>Répartition des ventes</h2>
+
+              <p>Part de chaque produit vendu.</p>
             </div>
           </div>
 
-          <div class="chart-wrapper">
-            <canvas id="produitsChart"></canvas>
+          <div class="chart-box chart-doughnut">
+            <canvas id="ventesRepartitionChart"></canvas>
           </div>
-        </div>
-
-        <div class="chart-container">
-          <div class="chart-header">
-            <div>
-              <span>CLIENTS</span>
-              <h3>Chiffre d'affaires par client</h3>
-            </div>
-          </div>
-
-          <div class="chart-wrapper">
-            <canvas id="clientsChart"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-container">
-          <div class="chart-header">
-            <div>
-              <span>ÉQUIPE COMMERCIALE</span>
-              <h3>Ventes par vendeur</h3>
-            </div>
-          </div>
-
-          <div class="chart-wrapper">
-            <canvas id="vendeursChart"></canvas>
-          </div>
-        </div>
+        </article>
       </section>
 
-      <!-- =========================
-           DERNIÈRES VENTES
-      ========================== -->
+      <!-- ==================================================
+         DEUXIÈME LIGNE DE GRAPHIQUES
+    =================================================== -->
 
-      <section class="table-section dashboard-table-section">
-        <div class="dashboard-table-header">
-          <div>
-            <span>ACTIVITÉ RÉCENTE</span>
-            <h2>Dernières ventes</h2>
+      <section class="dashboard-chart-grid">
+        <article class="dashboard-panel chart-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-eyebrow"> PRODUITS </span>
+
+              <h2>Produits les plus vendus</h2>
+
+              <p>Quantités vendues par produit.</p>
+            </div>
           </div>
 
-          <a href="ventes.html" class="dashboard-link">
+          <div class="chart-box">
+            <canvas id="produitsChart"></canvas>
+          </div>
+        </article>
+
+        <article class="dashboard-panel chart-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-eyebrow"> CLIENTS </span>
+
+              <h2>Acquisition clients</h2>
+
+              <p>Évolution des nouveaux clients.</p>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="clientsChart"></canvas>
+          </div>
+        </article>
+
+        <article class="dashboard-panel chart-panel">
+          <div class="panel-header">
+            <div>
+              <span class="panel-eyebrow"> ÉQUIPE </span>
+
+              <h2>Performance des vendeurs</h2>
+
+              <p>Chiffre d'affaires par vendeur.</p>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <canvas id="vendeursChart"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <!-- ==================================================
+         VENTES RÉCENTES
+    =================================================== -->
+
+      <section class="dashboard-panel table-panel">
+        <div class="panel-header">
+          <div>
+            <span class="panel-eyebrow"> TRANSACTIONS </span>
+
+            <h2>Ventes récentes</h2>
+
+            <p>Les dernières transactions enregistrées.</p>
+          </div>
+
+          <a href="ventes.html" class="panel-action">
             Voir toutes les ventes →
           </a>
         </div>
 
-        <div class="dashboard-table-wrapper">
+        <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Client</th>
                 <th>Produits</th>
-                <th>Quantité</th>
                 <th>Total</th>
                 <th>Vendeur</th>
                 <th>Date</th>
@@ -194,44 +274,53 @@
 
             <tbody id="dashboardVentes">
               <tr>
-                <td colspan="7">Chargement...</td>
+                <td colspan="6">Chargement...</td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- =========================
-           STOCK
-      ========================== -->
+      <!-- ==================================================
+         STOCK
+    =================================================== -->
 
-      <section class="table-section dashboard-table-section">
-        <div class="dashboard-table-header">
+      <section class="dashboard-panel table-panel">
+        <div class="panel-header">
           <div>
-            <span>INVENTAIRE</span>
-            <h2>État des stocks</h2>
+            <span class="panel-eyebrow"> INVENTAIRE </span>
+
+            <h2>État du stock</h2>
+
+            <p>Vue rapide des produits disponibles.</p>
           </div>
 
-          <div class="stock-indicators">
-            <span>
-              Stock total :
-              <strong id="stockTotal">0</strong>
-            </span>
+          <a href="produits.html" class="panel-action">
+            Gérer les produits →
+          </a>
+        </div>
 
-            <span>
-              Stock faible :
-              <strong id="stockFaible">0</strong>
-            </span>
+        <div class="stock-summary">
+          <div class="stock-summary-card">
+            <span> Stock total </span>
+
+            <strong id="stockTotal"> 0 </strong>
+          </div>
+
+          <div class="stock-summary-card stock-warning">
+            <span> Stock faible </span>
+
+            <strong id="stockFaible"> 0 </strong>
           </div>
         </div>
 
-        <div class="dashboard-table-wrapper">
+        <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Produit</th>
                 <th>Prix</th>
-                <th>Stock disponible</th>
+                <th>Stock</th>
                 <th>État</th>
               </tr>
             </thead>

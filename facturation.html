@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Facturation — MYSALES</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      .facturation-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px 60px;
+      }
+
+      .facturation-hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 25px;
+        margin-bottom: 30px;
+      }
+
+      .facturation-hero h1 {
+        margin: 0 0 8px;
+        font-size: 34px;
+      }
+
+      .facturation-hero p {
+        margin: 0;
+        color: #64748b;
+      }
+
+      .facturation-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .factures-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+        overflow: hidden;
+      }
+
+      .factures-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 22px 25px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .factures-card-header h2 {
+        margin: 0;
+        font-size: 20px;
+      }
+
+      .factures-card-header span {
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .table-wrapper {
+        overflow-x: auto;
+      }
+
+      .factures-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 850px;
+      }
+
+      .factures-table th {
+        background: #f8fafc;
+        color: #475569;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 15px;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .factures-table td {
+        padding: 16px 15px;
+        border-top: 1px solid #eef2f7;
+        color: #334155;
+        vertical-align: middle;
+      }
+
+      .factures-table tr:hover {
+        background: #f8fafc;
+      }
+
+      .facture-numero {
+        font-weight: 800;
+        color: #2563eb;
+      }
+
+      .facture-total {
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .facture-client {
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .facture-date {
+        color: #64748b;
+        font-size: 13px;
+      }
+
+      .btn-facture {
+        border: none;
+        border-radius: 9px;
+        padding: 9px 13px;
+        cursor: pointer;
+        font-weight: 700;
+        background: #2563eb;
+        color: #ffffff;
+        transition: 0.2s ease;
+      }
+
+      .btn-facture:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+      }
+
+      .etat-facturation {
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .facture-vide {
+        padding: 50px 20px;
+        text-align: center;
+        color: #64748b;
+      }
+
+      .facture-vide strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-size: 18px;
+      }
+
+      .message-facturation {
+        margin: 20px 0;
+        padding: 14px 16px;
+        border-radius: 10px;
+        display: none;
+      }
+
+      .message-facturation.error {
+        display: block;
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .message-facturation.success {
+        display: block;
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      @media (max-width: 800px) {
+        .facturation-hero {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .facturation-hero h1 {
+          font-size: 28px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">M</div>
+
+        <div>
+          <div class="brand-name">MYSALES</div>
+          <div class="brand-subtitle">Gestion commerciale</div>
+        </div>
+      </div>
+
+      <nav id="mainNav">
+        <a href="index.html">Accueil</a>
+        <a href="dashboard.html">Rapports</a>
+        <a href="ventes.html">Ventes</a>
+        <a href="produits.html">Produits</a>
+        <a href="clients.html">Clients</a>
+        <a href="facturation.html" class="active">Facturation</a>
+      </nav>
+
+      <div class="user-area">
+        <div>
+          <strong id="nomUtilisateur">Utilisateur</strong>
+          <span id="roleUtilisateur">Utilisateur</span>
+        </div>
+
+        <button id="boutonDeconnexion" class="btn-secondary">
+          Déconnexion
+        </button>
+      </div>
+    </header>
+
+    <main class="facturation-page">
+      <section class="facturation-hero">
+        <div>
+          <div class="eyebrow">DOCUMENTS COMMERCIAUX</div>
+
+          <h1>Facturation</h1>
+
+          <p>
+            Consultez les ventes enregistrées et générez vos factures
+            professionnelles.
+          </p>
+        </div>
+
+        <div class="facturation-actions">
+          <button id="boutonActualiser" class="btn-secondary">
+            Actualiser
+          </button>
+        </div>
+      </section>
+
+      <div id="messageFacturation" class="message-facturation"></div>
+
+      <section class="factures-card">
+        <div class="factures-card-header">
+          <div>
+            <h2>Historique des factures</h2>
+            <span>
+              Chaque vente peut être transformée en facture imprimable.
+            </span>
+          </div>
+
+          <strong id="nombreFactures"> 0 facture </strong>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="factures-table">
+            <thead>
+              <tr>
+                <th>Facture</th>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Vendeur</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="listeFactures"></tbody>
+          </table>
+        </div>
+
+        <div id="factureVide" class="facture-vide" style="display: none">
+          <strong>Aucune facture disponible</strong>
+          Les ventes enregistrées apparaîtront automatiquement ici.
+        </div>
+      </section>
+    </main>
+
+    <script src="facturation.js"></script>
+    <script src="auth.js"></script>
+  </body>
+</html>

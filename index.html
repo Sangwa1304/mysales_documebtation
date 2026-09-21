@@ -2,119 +2,1038 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>MySales - Gestion des ventes</title>
+    <title>MYSALES — Bienvenue</title>
 
     <link rel="stylesheet" href="style.css" />
+
+    <style>
+      /* =========================================================
+           MYSALES — ACCUEIL PROFESSIONNEL
+           ========================================================= */
+
+      body.welcome-page {
+        margin: 0;
+        min-height: 100vh;
+        background: #f5f7fb;
+        color: #0f172a;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .welcome-layout {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr);
+      }
+
+      /* =========================================================
+           SIDEBAR
+           ========================================================= */
+
+      .welcome-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        box-sizing: border-box;
+        padding: 22px 16px;
+        background: linear-gradient(180deg, #0f172a 0%, #172554 100%);
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+
+      .welcome-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 8px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .welcome-brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #2563eb, #60a5fa);
+        font-size: 21px;
+        font-weight: 900;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+      }
+
+      .welcome-brand strong {
+        display: block;
+        font-size: 18px;
+        letter-spacing: 0.5px;
+      }
+
+      .welcome-brand span {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        color: #94a3b8;
+      }
+
+      .welcome-nav-title {
+        margin: 25px 10px 10px;
+        color: #64748b;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+      }
+
+      .welcome-navigation {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .welcome-navigation a {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-height: 45px;
+        padding: 0 13px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s ease;
+      }
+
+      .welcome-navigation a:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        transform: translateX(2px);
+      }
+
+      .welcome-navigation a.active {
+        background: linear-gradient(
+          90deg,
+          rgba(37, 99, 235, 0.95),
+          rgba(59, 130, 246, 0.72)
+        );
+        color: #ffffff;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+      }
+
+      .welcome-navigation .nav-icon {
+        width: 22px;
+        text-align: center;
+        font-size: 17px;
+      }
+
+      .welcome-sidebar-spacer {
+        flex: 1;
+      }
+
+      /* =========================================================
+           UTILISATEUR / DÉCONNEXION
+           ========================================================= */
+
+      .welcome-account {
+        margin-top: 20px;
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.055);
+      }
+
+      .welcome-account-title {
+        margin-bottom: 11px;
+        color: #64748b;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+      }
+
+      .welcome-account-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .welcome-avatar {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .welcome-account-name {
+        min-width: 0;
+      }
+
+      .welcome-account-name strong {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #ffffff;
+        font-size: 12px;
+      }
+
+      .welcome-account-name span {
+        display: block;
+        margin-top: 3px;
+        color: #94a3b8;
+        font-size: 10px;
+      }
+
+      .welcome-logout {
+        width: 100%;
+        margin-top: 12px;
+        padding: 9px 11px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.045);
+        color: #cbd5e1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        transition: 0.2s ease;
+      }
+
+      .welcome-logout:hover {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(248, 113, 113, 0.25);
+        color: #fecaca;
+      }
+
+      /* =========================================================
+           CONTENU
+           ========================================================= */
+
+      .welcome-content {
+        min-width: 0;
+        padding: 30px;
+        box-sizing: border-box;
+      }
+
+      .welcome-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+
+      .welcome-mobile-button {
+        display: none;
+        border: none;
+        background: #ffffff;
+        color: #0f172a;
+        border-radius: 10px;
+        padding: 10px 13px;
+        cursor: pointer;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.08);
+      }
+
+      .welcome-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #ecfdf5;
+        color: #047857;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .welcome-status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12);
+      }
+
+      /* =========================================================
+           HERO
+           ========================================================= */
+
+      .welcome-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 38px;
+        border-radius: 22px;
+        background:
+          radial-gradient(
+            circle at 90% 10%,
+            rgba(96, 165, 250, 0.3),
+            transparent 35%
+          ),
+          linear-gradient(135deg, #0f172a 0%, #172554 58%, #1d4ed8 100%);
+        color: #ffffff;
+        box-shadow: 0 18px 50px rgba(15, 23, 42, 0.16);
+      }
+
+      .welcome-hero::after {
+        content: "";
+        position: absolute;
+        right: -100px;
+        bottom: -120px;
+        width: 330px;
+        height: 330px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+      }
+
+      .welcome-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 760px;
+      }
+
+      .welcome-eyebrow {
+        margin-bottom: 10px;
+        color: #93c5fd;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+      }
+
+      .welcome-hero h1 {
+        margin: 0;
+        font-size: clamp(30px, 4vw, 48px);
+        line-height: 1.08;
+        letter-spacing: -1.5px;
+      }
+
+      .welcome-hero p {
+        max-width: 690px;
+        margin: 17px 0 0;
+        color: #cbd5e1;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .welcome-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+      }
+
+      .welcome-primary-action,
+      .welcome-secondary-action {
+        min-height: 43px;
+        padding: 0 17px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 800;
+        transition: 0.2s ease;
+      }
+
+      .welcome-primary-action {
+        background: #ffffff;
+        color: #1d4ed8;
+      }
+
+      .welcome-secondary-action {
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
+      }
+
+      .welcome-primary-action:hover,
+      .welcome-secondary-action:hover {
+        transform: translateY(-2px);
+      }
+
+      /* =========================================================
+           KPI
+           ========================================================= */
+
+      .welcome-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin: 22px 0;
+      }
+
+      .welcome-kpi {
+        padding: 20px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 15px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+      }
+
+      .welcome-kpi-label {
+        color: #64748b;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+
+      .welcome-kpi-value {
+        margin-top: 8px;
+        font-size: 27px;
+        font-weight: 850;
+        letter-spacing: -1px;
+      }
+
+      .welcome-kpi-sub {
+        margin-top: 5px;
+        color: #94a3b8;
+        font-size: 10px;
+      }
+
+      /* =========================================================
+           BLOCS
+           ========================================================= */
+
+      .welcome-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+        gap: 20px;
+      }
+
+      .welcome-panel {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+        overflow: hidden;
+      }
+
+      .welcome-panel-head {
+        padding: 19px 21px;
+        border-bottom: 1px solid #eef2f7;
+      }
+
+      .welcome-panel-head h2 {
+        margin: 4px 0 0;
+        font-size: 17px;
+      }
+
+      .welcome-panel-head p {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 11px;
+      }
+
+      .welcome-activity {
+        padding: 7px 21px 15px;
+      }
+
+      .welcome-activity-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .welcome-activity-row:last-child {
+        border-bottom: none;
+      }
+
+      .welcome-activity-icon {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 14px;
+      }
+
+      .welcome-activity-text {
+        min-width: 0;
+        flex: 1;
+      }
+
+      .welcome-activity-text strong {
+        display: block;
+        font-size: 12px;
+      }
+
+      .welcome-activity-text span {
+        display: block;
+        margin-top: 3px;
+        color: #94a3b8;
+        font-size: 10px;
+      }
+
+      .welcome-security {
+        padding: 20px;
+      }
+
+      .security-item {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 15px;
+      }
+
+      .security-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .security-icon {
+        width: 35px;
+        height: 35px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ecfdf5;
+        color: #059669;
+      }
+
+      .security-item strong {
+        display: block;
+        font-size: 12px;
+      }
+
+      .security-item span {
+        display: block;
+        margin-top: 3px;
+        color: #64748b;
+        font-size: 10px;
+        line-height: 1.5;
+      }
+
+      /* =========================================================
+           ACCÈS RAPIDE
+           ========================================================= */
+
+      .welcome-quick {
+        margin-top: 20px;
+      }
+
+      .welcome-quick-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        padding: 18px;
+      }
+
+      .welcome-quick-card {
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #0f172a;
+        transition: 0.2s ease;
+      }
+
+      .welcome-quick-card:hover {
+        transform: translateY(-2px);
+        border-color: #bfdbfe;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+      }
+
+      .welcome-quick-card strong {
+        display: block;
+        margin-top: 9px;
+        font-size: 12px;
+      }
+
+      .welcome-quick-card span {
+        display: block;
+        margin-top: 4px;
+        color: #64748b;
+        font-size: 10px;
+        line-height: 1.45;
+      }
+
+      .quick-icon {
+        font-size: 21px;
+      }
+
+      /* =========================================================
+           ZONE ADMIN
+           ========================================================= */
+
+      .welcome-admin {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #eff6ff, #ffffff);
+      }
+
+      .welcome-admin h2 {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .welcome-admin p {
+        margin: 6px 0 15px;
+        color: #64748b;
+        font-size: 11px;
+      }
+
+      .welcome-admin-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+
+      .welcome-admin-links a {
+        padding: 9px 12px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        color: #1d4ed8;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .welcome-admin-links a:hover {
+        background: #eff6ff;
+      }
+
+      .welcome-footer {
+        padding: 25px 0 5px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 10px;
+      }
+
+      /* =========================================================
+           MOBILE
+           ========================================================= */
+
+      @media (max-width: 1050px) {
+        .welcome-layout {
+          grid-template-columns: 230px minmax(0, 1fr);
+        }
+
+        .welcome-content {
+          padding: 22px;
+        }
+
+        .welcome-kpis {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .welcome-quick-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 800px) {
+        .welcome-layout {
+          display: block;
+        }
+
+        .welcome-sidebar {
+          position: fixed;
+          left: -285px;
+          top: 0;
+          width: 270px;
+          transition: left 0.25s ease;
+          box-shadow: 15px 0 40px rgba(15, 23, 42, 0.2);
+        }
+
+        .welcome-sidebar.open {
+          left: 0;
+        }
+
+        .welcome-mobile-button {
+          display: inline-flex;
+        }
+
+        .welcome-topbar {
+          margin-bottom: 15px;
+        }
+
+        .welcome-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .welcome-hero {
+          padding: 28px 23px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .welcome-content {
+          padding: 15px;
+        }
+
+        .welcome-kpis {
+          grid-template-columns: 1fr;
+        }
+
+        .welcome-quick-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .welcome-status {
+          display: none;
+        }
+      }
+    </style>
   </head>
 
-  <body>
-    <!-- =====================================================
-         EN-TÊTE
-         ===================================================== -->
+  <body class="welcome-page">
+    <div class="welcome-layout">
+      <!-- =========================================================
+         SIDEBAR
+         ========================================================= -->
 
-    <header class="header">
-      <div class="logo">MySales</div>
+      <aside class="welcome-sidebar" id="welcomeSidebar">
+        <div class="welcome-brand">
+          <div class="welcome-brand-mark">M</div>
 
-      <nav>
-        <a href="index.html">Accueil</a>
-        <a href="clients.html">Clients</a>
-        <a href="produits.html">Produits</a>
-        <a href="ventes.html">Ventes</a>
-        <a href="dashboard.html">Dashboard</a>
-      </nav>
-
-      <!-- Utilisateur connecté -->
-
-      <div class="user-menu">
-        <div class="user-info">
-          <strong id="nomUtilisateur"> Chargement... </strong>
-
-          <span id="roleUtilisateur"></span>
+          <div>
+            <strong>MYSALES</strong>
+            <span>Gestion commerciale</span>
+          </div>
         </div>
 
-        <button type="button" id="boutonDeconnexion">Déconnexion</button>
-      </div>
-    </header>
+        <div class="welcome-nav-title">Navigation</div>
 
-    <!-- =====================================================
+        <nav class="welcome-navigation">
+          <a href="index.html" class="active">
+            <span class="nav-icon">⌂</span>
+            <span>Accueil</span>
+          </a>
+
+          <a href="clients.html">
+            <span class="nav-icon">♙</span>
+            <span>Clients</span>
+          </a>
+
+          <a href="produits.html">
+            <span class="nav-icon">▣</span>
+            <span>Produits</span>
+          </a>
+
+          <a href="ventes.html">
+            <span class="nav-icon">▤</span>
+            <span>Ventes</span>
+          </a>
+
+          <a href="dashboard.html">
+            <span class="nav-icon">◈</span>
+            <span>Rapports & performances</span>
+          </a>
+
+          <a href="stock.html" class="admin-only">
+            <span class="nav-icon">▥</span>
+            <span>Stock</span>
+          </a>
+
+          <a href="utilisateurs.html" class="admin-only">
+            <span class="nav-icon">♙</span>
+            <span>Utilisateurs</span>
+          </a>
+
+          <a href="audit.html" class="admin-only">
+            <span class="nav-icon">◉</span>
+            <span>Audit & sécurité</span>
+          </a>
+        </nav>
+
+        <div class="welcome-sidebar-spacer"></div>
+
+        <!-- =====================================================
+             COMPTE CONNECTÉ
+             ===================================================== -->
+
+        <div class="welcome-account">
+          <div class="welcome-account-title">Session actuelle</div>
+
+          <div class="welcome-account-user">
+            <div class="welcome-avatar" id="avatarUtilisateur">M</div>
+
+            <div class="welcome-account-name">
+              <strong id="nomUtilisateur"> Chargement... </strong>
+
+              <span id="roleUtilisateur"> Vérification... </span>
+            </div>
+          </div>
+
+          <button type="button" id="boutonDeconnexion" class="welcome-logout">
+            <span>↪</span>
+            <span>Se déconnecter</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- =========================================================
          CONTENU PRINCIPAL
-         ===================================================== -->
+         ========================================================= -->
 
-    <main>
-      <!-- Présentation -->
+      <main class="welcome-content">
+        <div class="welcome-topbar">
+          <button type="button" class="welcome-mobile-button" id="ouvrirMenu">
+            ☰
+          </button>
 
-      <section class="hero">
-        <div>
-          <h1>
-            Gérez vos ventes
-            <span>simplement.</span>
-          </h1>
+          <span>
+            <strong style="font-size: 13px"> Espace de gestion </strong>
+          </span>
+
+          <div class="welcome-status">
+            <span class="welcome-status-dot"></span>
+            Système opérationnel
+          </div>
+        </div>
+
+        <!-- =====================================================
+             HERO
+             ===================================================== -->
+
+        <section class="welcome-hero">
+          <div class="welcome-hero-content">
+            <div class="welcome-eyebrow">PLATEFORME DE GESTION COMMERCIALE</div>
+
+            <h1>Bienvenue sur MYSALES</h1>
+
+            <p>
+              Gérez vos clients, vos produits, vos ventes et vos performances
+              commerciales depuis un espace centralisé, sécurisé et
+              professionnel.
+            </p>
+
+            <div class="welcome-hero-actions">
+              <a href="ventes.html" class="welcome-primary-action">
+                + Nouvelle vente
+              </a>
+
+              <a href="dashboard.html" class="welcome-secondary-action">
+                Voir les performances
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             KPI
+             ===================================================== -->
+
+        <section class="welcome-kpis">
+          <div class="welcome-kpi">
+            <div class="welcome-kpi-label">Clients</div>
+
+            <div class="welcome-kpi-value" id="nombreClients">...</div>
+
+            <div class="welcome-kpi-sub">Clients enregistrés</div>
+          </div>
+
+          <div class="welcome-kpi">
+            <div class="welcome-kpi-label">Produits</div>
+
+            <div class="welcome-kpi-value" id="nombreProduits">...</div>
+
+            <div class="welcome-kpi-sub">Produits du catalogue</div>
+          </div>
+
+          <div class="welcome-kpi">
+            <div class="welcome-kpi-label">Ventes</div>
+
+            <div class="welcome-kpi-value" id="nombreVentes">...</div>
+
+            <div class="welcome-kpi-sub">Transactions enregistrées</div>
+          </div>
+
+          <div class="welcome-kpi">
+            <div class="welcome-kpi-label">Chiffre d'affaires</div>
+
+            <div class="welcome-kpi-value" id="chiffreAffaires">...</div>
+
+            <div class="welcome-kpi-sub">Total des ventes</div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             ACTIVITÉ + SÉCURITÉ
+             ===================================================== -->
+
+        <section class="welcome-grid">
+          <div class="welcome-panel">
+            <div class="welcome-panel-head">
+              <div class="welcome-eyebrow" style="color: #2563eb; margin: 0">
+                ACTIVITÉ
+              </div>
+
+              <h2>Suivi de l'activité</h2>
+
+              <p>Les dernières opérations enregistrées sur MYSALES.</p>
+            </div>
+
+            <div class="welcome-activity" id="listeActivite">
+              <div class="welcome-activity-row">
+                <div class="welcome-activity-icon">◌</div>
+
+                <div class="welcome-activity-text">
+                  <strong> Chargement de l'activité... </strong>
+
+                  <span> Veuillez patienter </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="welcome-panel">
+            <div class="welcome-panel-head">
+              <div class="welcome-eyebrow" style="color: #059669; margin: 0">
+                SÉCURITÉ
+              </div>
+
+              <h2>Espace sécurisé</h2>
+
+              <p>Protection et contrôle des accès.</p>
+            </div>
+
+            <div class="welcome-security">
+              <div class="security-item">
+                <div class="security-icon">✓</div>
+
+                <div>
+                  <strong> Session sécurisée </strong>
+
+                  <span>
+                    Votre session est protégée par une authentification
+                    sécurisée.
+                  </span>
+                </div>
+              </div>
+
+              <div class="security-item">
+                <div class="security-icon">✓</div>
+
+                <div>
+                  <strong> Contrôle des rôles </strong>
+
+                  <span>
+                    Les fonctions sensibles sont réservées aux utilisateurs
+                    autorisés.
+                  </span>
+                </div>
+              </div>
+
+              <div class="security-item">
+                <div class="security-icon">✓</div>
+
+                <div>
+                  <strong> Traçabilité </strong>
+
+                  <span>
+                    Les opérations importantes peuvent être suivies depuis
+                    l'espace Audit.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             ACCÈS RAPIDE
+             ===================================================== -->
+
+        <section class="welcome-panel welcome-quick">
+          <div class="welcome-panel-head">
+            <div class="welcome-eyebrow" style="color: #2563eb; margin: 0">
+              ACCÈS RAPIDE
+            </div>
+
+            <h2>Gérer votre activité</h2>
+
+            <p>Accédez rapidement aux principales fonctions de MYSALES.</p>
+          </div>
+
+          <div class="welcome-quick-grid">
+            <a href="clients.html" class="welcome-quick-card">
+              <div class="quick-icon">♙</div>
+
+              <strong> Clients </strong>
+
+              <span> Ajouter et gérer les informations clients. </span>
+            </a>
+
+            <a href="produits.html" class="welcome-quick-card">
+              <div class="quick-icon">▣</div>
+
+              <strong> Produits </strong>
+
+              <span> Gérer le catalogue et les stocks. </span>
+            </a>
+
+            <a href="ventes.html" class="welcome-quick-card">
+              <div class="quick-icon">▤</div>
+
+              <strong> Ventes & facturation </strong>
+
+              <span> Enregistrer une vente et consulter les documents. </span>
+            </a>
+
+            <a href="dashboard.html" class="welcome-quick-card">
+              <div class="quick-icon">◈</div>
+
+              <strong> Rapports </strong>
+
+              <span> Analysez les performances commerciales. </span>
+            </a>
+          </div>
+        </section>
+
+        <!-- =====================================================
+             ADMINISTRATION
+             ===================================================== -->
+
+        <section class="welcome-admin admin-only">
+          <h2>Administration MYSALES</h2>
 
           <p>
-            MySales vous permet de gérer vos clients, vos produits et vos ventes
-            depuis une seule application.
+            Les outils ci-dessous sont accessibles uniquement aux
+            administrateurs.
           </p>
 
-          <button type="button" onclick="commencer()">Commencer</button>
-        </div>
-      </section>
+          <div class="welcome-admin-links">
+            <a href="utilisateurs.html"> Gestion des utilisateurs </a>
 
-      <!-- =================================================
-             STATISTIQUES
-             ================================================= -->
+            <a href="stock.html"> Gestion du stock </a>
 
-      <section class="stats">
-        <!-- Clients -->
+            <a href="audit.html"> Audit & sécurité </a>
+          </div>
+        </section>
 
-        <div class="card">
-          <h2 id="nombreClients">...</h2>
-
-          <p>Clients</p>
-        </div>
-
-        <!-- Produits -->
-
-        <div class="card">
-          <h2 id="nombreProduits">...</h2>
-
-          <p>Produits</p>
-        </div>
-
-        <!-- Chiffre d'affaires -->
-
-        <div class="card">
-          <h2 id="chiffreAffaires">...</h2>
-
-          <p>Chiffre d'affaires</p>
-        </div>
-
-        <!-- Ventes -->
-
-        <div class="card">
-          <h2 id="nombreVentes">...</h2>
-
-          <p>Ventes</p>
-        </div>
-      </section>
-    </main>
-
-    <!-- =====================================================
-         PIED DE PAGE
-         ===================================================== -->
-
-    <footer>
-      <p>© 2026 MySales - Application de gestion des ventes</p>
-    </footer>
-
-    <!-- =====================================================
-         JAVASCRIPT
-         ===================================================== -->
+        <footer class="welcome-footer">
+          © 2026 MYSALES — Gestion commerciale professionnelle
+        </footer>
+      </main>
+    </div>
 
     <script src="index.js"></script>
-
     <script src="auth.js"></script>
   </body>
 </html>

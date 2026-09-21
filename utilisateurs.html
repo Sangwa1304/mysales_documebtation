@@ -1,210 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Utilisateurs - MYSALES</title>
+    <title>Utilisateurs — MYSALES</title>
 
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
+  <body>
+    <header class="app-header">
+      <!-- LOGO -->
 
-    <header class="header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"> M </span>
 
-        <div class="logo">
-            MySales
-        </div>
+        <span>
+          <strong> MYSALES </strong>
 
-        <nav class="nav">
-            <a href="/index.html">Accueil</a>
-            <a href="/clients.html">Clients</a>
-            <a href="/produits.html">Produits</a>
-            <a href="/ventes.html">Ventes</a>
-            <a href="/dashboard.html">Dashboard</a>
-            <a href="/utilisateurs.html">Utilisateurs</a>
-        </nav>
+          <small> Gestion commerciale </small>
+        </span>
+      </a>
 
-        <div class="user-menu">
+      <!-- NAVIGATION -->
 
-            <div class="user-info">
-                <strong id="nomUtilisateur">
-                    Chargement...
-                </strong>
+      <nav id="mainNav">
+        <a href="index.html"> Tableau de bord </a>
 
-                <span id="roleUtilisateur"></span>
-            </div>
+        <a href="ventes.html"> Ventes </a>
 
-            <button
-                type="button"
-                id="boutonDeconnexion">
-                Déconnexion
-            </button>
+        <a href="produits.html"> Produits </a>
 
-        </div>
+        <a href="clients.html"> Clients </a>
 
+        <a href="dashboard.html"> Rapports </a>
+
+        <a class="active" href="utilisateurs.html"> Utilisateurs </a>
+      </nav>
+
+      <!-- UTILISATEUR CONNECTÉ -->
+
+      <div class="header-user">
+        <span id="nomUtilisateur"> ... </span>
+
+        <small id="roleUtilisateur"> ... </small>
+
+        <button id="boutonDeconnexion" class="btn btn-light" type="button">
+          Déconnexion
+        </button>
+      </div>
     </header>
 
-    <main class="container">
+    <main class="app-main">
+      <!-- ==================================================
+         TITRE
+    =================================================== -->
 
-        <h1>Gestion des utilisateurs</h1>
+      <section class="page-top">
+        <div>
+          <span class="eyebrow"> ADMINISTRATION </span>
 
-        <p>
-            Créez et gérez les comptes utilisateurs de MYSALES.
-        </p>
+          <h1>Gestion des utilisateurs</h1>
 
-        <!-- ==================================================
-             FORMULAIRE UTILISATEUR
-             ================================================== -->
+          <p class="muted">
+            Gérez les comptes administrateurs et vendeurs de votre entreprise.
+          </p>
+        </div>
 
-        <section class="card">
+        <button id="btnNouvelUtilisateur" class="btn btn-primary" type="button">
+          + Ajouter un utilisateur
+        </button>
+      </section>
 
-            <h2 id="titreFormulaireUtilisateur">
-                Ajouter un utilisateur
-            </h2>
+      <!-- ==================================================
+         FORMULAIRE
+    =================================================== -->
 
-            <form id="utilisateurForm">
+      <section id="formulaireUtilisateur" class="panel" hidden>
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow"> COMPTE </span>
 
-                <div class="form-group">
+            <h2 id="titreFormulaire">Ajouter un utilisateur</h2>
+          </div>
+        </div>
 
-                    <label for="nomUtilisateurForm">
-                        Nom complet
-                    </label>
+        <form id="utilisateurForm" class="grid-form">
+          <label>
+            Nom complet
 
-                    <input
-                        type="text"
-                        id="nomUtilisateurForm"
-                        required
-                        placeholder="Ex : Jean Dupont"
-                    >
+            <input
+              type="text"
+              id="nomUtilisateurForm"
+              placeholder="Ex : Jean Mukendi"
+              required
+            />
+          </label>
 
-                </div>
+          <label>
+            Adresse e-mail
 
-                <div class="form-group">
+            <input
+              type="email"
+              id="emailUtilisateur"
+              placeholder="utilisateur@entreprise.com"
+              required
+            />
+          </label>
 
-                    <label for="emailUtilisateur">
-                        Adresse e-mail
-                    </label>
+          <label>
+            Mot de passe
 
-                    <input
-                        type="email"
-                        id="emailUtilisateur"
-                        required
-                        placeholder="Ex : jean@gmail.com"
-                    >
+            <input
+              type="password"
+              id="motDePasseUtilisateur"
+              minlength="8"
+              placeholder="Minimum 8 caractères"
+            />
+          </label>
 
-                </div>
+          <label>
+            Rôle
 
-                <div class="form-group">
+            <select id="roleUtilisateurForm" required>
+              <option value="vendeur">Vendeur</option>
 
-                    <label for="motDePasseUtilisateur">
-                        Mot de passe
-                    </label>
+              <option value="admin">Administrateur</option>
+            </select>
+          </label>
 
-                    <input
-                        type="password"
-                        id="motDePasseUtilisateur"
-                        placeholder="Minimum 6 caractères"
-                    >
+          <div class="form-actions">
+            <button
+              class="btn btn-primary"
+              type="submit"
+              id="btnEnregistrerUtilisateur"
+            >
+              Enregistrer
+            </button>
 
-                    <small>
-                        Laisser vide lors d'une modification
-                        pour conserver le mot de passe actuel.
-                    </small>
+            <button
+              class="btn btn-light"
+              type="button"
+              id="btnAnnulerUtilisateur"
+            >
+              Annuler
+            </button>
+          </div>
+        </form>
+      </section>
 
-                </div>
+      <!-- ==================================================
+         LISTE DES UTILISATEURS
+    =================================================== -->
 
-                <div class="form-group">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow"> COMPTES </span>
 
-                    <label for="roleUtilisateurForm">
-                        Rôle
-                    </label>
+            <h2>Utilisateurs</h2>
+          </div>
 
-                    <select id="roleUtilisateurForm" required>
+          <span id="compteurUtilisateurs" class="badge"> 0 utilisateur </span>
+        </div>
 
-                        <option value="vendeur">
-                            Vendeur
-                        </option>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
 
-                        <option value="admin">
-                            Administrateur
-                        </option>
+                <th>E-mail</th>
 
-                    </select>
+                <th>Rôle</th>
 
-                </div>
+                <th>Date de création</th>
 
-                <button
-                    type="submit"
-                    id="boutonUtilisateur">
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-                    Enregistrer l'utilisateur
-
-                </button>
-
-                <button
-                    type="button"
-                    id="boutonAnnulerUtilisateur"
-                    style="display: none;">
-
-                    Annuler
-
-                </button>
-
-            </form>
-
-        </section>
-
-        <!-- ==================================================
-             LISTE DES UTILISATEURS
-             ================================================== -->
-
-        <section class="card">
-
-            <h2>Liste des utilisateurs</h2>
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Rôle</th>
-                            <th>Date de création</th>
-                            <th>Actions</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="utilisateursList">
-
-                        <tr>
-
-                            <td colspan="6">
-                                Chargement...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
+            <tbody id="listeUtilisateurs">
+              <tr>
+                <td colspan="5">Chargement...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </main>
 
     <script src="utilisateurs.js"></script>
+
     <script src="auth.js"></script>
-
-</body>
-
+  </body>
 </html>

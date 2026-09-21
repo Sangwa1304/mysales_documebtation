@@ -7,27 +7,102 @@ let produits = [];
 let ventes = [];
 let panier = [];
 
+/* =========================================================
+   ÉLÉMENTS HTML
+   ========================================================= */
+
 const clientVente = document.getElementById("clientVente");
+
 const rechercheProduit = document.getElementById("rechercheProduit");
+
 const produitVente = document.getElementById("produitVente");
+
 const quantiteVente = document.getElementById("quantiteVente");
+
 const sousTotalVente = document.getElementById("sousTotalVente");
+
 const prixProduit = document.getElementById("prixProduit");
+
 const stockProduit = document.getElementById("stockProduit");
+
 const informationProduit = document.getElementById("informationProduit");
+
 const panierList = document.getElementById("panierList");
+
 const totalVente = document.getElementById("totalVente");
+
 const venteForm = document.getElementById("venteForm");
+
 const ventesList = document.getElementById("ventesList");
+
 const rechercheVente = document.getElementById("rechercheVente");
+
 const boutonAjouterPanier = document.getElementById("boutonAjouterPanier");
+
 const boutonActualiser = document.getElementById("boutonActualiser");
+
 const nombreVentes = document.getElementById("nombreVentes");
+
 const chiffreAffaires = document.getElementById("chiffreAffaires");
 
-// ======================================================
-// CHARGEMENT DES CLIENTS
-// ======================================================
+const modalVente = document.getElementById("modalVente");
+
+const modalOverlay = document.getElementById("modalOverlay");
+
+const fermerModalVente = document.getElementById("fermerModalVente");
+
+const boutonFermerFacture = document.getElementById("boutonFermerFacture");
+
+const boutonImprimerFacture = document.getElementById("boutonImprimerFacture");
+
+const contenuFacture = document.getElementById("contenuFacture");
+
+/* =========================================================
+   OUTILS
+   ========================================================= */
+
+function formaterMontant(valeur) {
+  const nombre = Number(valeur);
+
+  if (!Number.isFinite(nombre)) {
+    return "0.00 $";
+  }
+
+  return `${nombre.toFixed(2)} $`;
+}
+
+function formaterDate(date) {
+  if (!date) {
+    return "-";
+  }
+
+  const valeur = new Date(date);
+
+  if (Number.isNaN(valeur.getTime())) {
+    return date;
+  }
+
+  return valeur.toLocaleString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function echapperHTML(valeur) {
+  return String(valeur ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* =========================================================
+   CHARGER LES CLIENTS
+   ========================================================= */
 
 async function chargerClients() {
   try {
@@ -47,20 +122,21 @@ async function chargerClients() {
       const option = document.createElement("option");
 
       option.value = client.id;
-      option.textContent = `${client.nom_complet} - ${client.telephone}`;
+
+      option.textContent = `${client.nom_complet} - ${client.telephone || "Sans téléphone"}`;
 
       clientVente.appendChild(option);
     });
   } catch (error) {
-    console.error("Erreur clients :", error);
+    console.error("Erreur chargement clients :", error);
 
     clientVente.innerHTML = '<option value="">Erreur de chargement</option>';
   }
 }
 
-// ======================================================
-// CHARGEMENT DES PRODUITS
-// ======================================================
+/* =========================================================
+   CHARGER LES PRODUITS
+   ========================================================= */
 
 async function chargerProduits() {
   try {
@@ -76,15 +152,15 @@ async function chargerProduits() {
 
     afficherProduitsDansSelect();
   } catch (error) {
-    console.error("Erreur produits :", error);
+    console.error("Erreur chargement produits :", error);
 
     produitVente.innerHTML = '<option value="">Erreur de chargement</option>';
   }
 }
 
-// ======================================================
-// AFFICHER LES PRODUITS DANS LE SELECT
-// ======================================================
+/* =========================================================
+   AFFICHER LES PRODUITS
+   ========================================================= */
 
 function afficherProduitsDansSelect() {
   const recherche = rechercheProduit.value.trim().toLowerCase();
@@ -93,7 +169,7 @@ function afficherProduitsDansSelect() {
 
   produits
     .filter((produit) => {
-      return produit.nom.toLowerCase().includes(recherche);
+      return String(produit.nom).toLowerCase().includes(recherche);
     })
     .forEach((produit) => {
       const option = document.createElement("option");
@@ -104,9 +180,10 @@ function afficherProduitsDansSelect() {
 
       const stockDisponible = Number(produit.stock) - quantiteDansPanier;
 
-      option.textContent = `${produit.nom} — ${Number(produit.prix).toFixed(2)} $ — Stock : ${stockDisponible}`;
+      option.textContent = `${produit.nom} — ${formaterMontant(produit.prix)} — Stock : ${stockDisponible}`;
 
       option.dataset.prix = produit.prix;
+
       option.dataset.stock = stockDisponible;
 
       produitVente.appendChild(option);
@@ -115,9 +192,9 @@ function afficherProduitsDansSelect() {
   afficherInformationProduit();
 }
 
-// ======================================================
-// QUANTITE DEJA PRESENTE DANS LE PANIER
-// ======================================================
+/* =========================================================
+   QUANTITÉ D'UN PRODUIT DANS LE PANIER
+   ========================================================= */
 
 function obtenirQuantitePanier(produitId) {
   const ligne = panier.find(
@@ -127,18 +204,22 @@ function obtenirQuantitePanier(produitId) {
   return ligne ? Number(ligne.quantite) : 0;
 }
 
-// ======================================================
-// INFORMATIONS DU PRODUIT
-// ======================================================
+/* =========================================================
+   INFORMATIONS PRODUIT
+   ========================================================= */
 
 function afficherInformationProduit() {
   const produitId = produitVente.value;
 
   if (!produitId) {
     informationProduit.style.display = "none";
+
     prixProduit.textContent = "0.00 $";
+
     stockProduit.textContent = "0";
+
     sousTotalVente.value = "0.00 $";
+
     return;
   }
 
@@ -148,6 +229,7 @@ function afficherInformationProduit() {
 
   if (!produit) {
     informationProduit.style.display = "none";
+
     return;
   }
 
@@ -157,23 +239,25 @@ function afficherInformationProduit() {
 
   informationProduit.style.display = "grid";
 
-  prixProduit.textContent = `${Number(produit.prix).toFixed(2)} $`;
+  prixProduit.textContent = formaterMontant(produit.prix);
 
   stockProduit.textContent = stockDisponible;
 
   calculerSousTotal();
 }
 
-// ======================================================
-// CALCUL DU SOUS-TOTAL
-// ======================================================
+/* =========================================================
+   CALCUL SOUS-TOTAL
+   ========================================================= */
 
 function calculerSousTotal() {
   const produitId = produitVente.value;
+
   const quantite = Number(quantiteVente.value);
 
   if (!produitId || !Number.isInteger(quantite) || quantite <= 0) {
     sousTotalVente.value = "0.00 $";
+
     return;
   }
 
@@ -183,29 +267,33 @@ function calculerSousTotal() {
 
   if (!produit) {
     sousTotalVente.value = "0.00 $";
+
     return;
   }
 
   const sousTotal = Number(produit.prix) * quantite;
 
-  sousTotalVente.value = `${sousTotal.toFixed(2)} $`;
+  sousTotalVente.value = formaterMontant(sousTotal);
 }
 
-// ======================================================
-// AJOUTER AU PANIER
-// ======================================================
+/* =========================================================
+   AJOUTER AU PANIER
+   ========================================================= */
 
 function ajouterAuPanier() {
   const produitId = Number(produitVente.value);
+
   const quantite = Number(quantiteVente.value);
 
   if (!produitId) {
     alert("Veuillez sélectionner un produit.");
+
     return;
   }
 
   if (!Number.isInteger(quantite) || quantite <= 0) {
     alert("La quantité doit être un nombre entier supérieur à 0.");
+
     return;
   }
 
@@ -213,6 +301,7 @@ function ajouterAuPanier() {
 
   if (!produit) {
     alert("Produit introuvable.");
+
     return;
   }
 
@@ -225,6 +314,7 @@ function ajouterAuPanier() {
       `Stock insuffisant pour "${produit.nom}".\n\n` +
         `Stock disponible : ${Number(produit.stock) - quantiteExistante}`,
     );
+
     return;
   }
 
@@ -237,8 +327,11 @@ function ajouterAuPanier() {
   } else {
     panier.push({
       produit_id: produitId,
+
       produit: produit.nom,
+
       prix_unitaire: Number(produit.prix),
+
       quantite: quantite,
     });
   }
@@ -246,28 +339,33 @@ function ajouterAuPanier() {
   afficherPanier();
 
   produitVente.value = "";
+
   quantiteVente.value = 1;
 
   afficherProduitsDansSelect();
 }
 
-// ======================================================
-// AFFICHER LE PANIER
-// ======================================================
+/* =========================================================
+   AFFICHER PANIER
+   ========================================================= */
 
 function afficherPanier() {
   panierList.innerHTML = "";
 
   if (panier.length === 0) {
     panierList.innerHTML = `
-            <tr>
-                <td colspan="5">
-                    Aucun produit dans le panier.
-                </td>
-            </tr>
-        `;
+      <tr>
+        <td
+          colspan="5"
+          class="ms-cart-empty"
+        >
+          Aucun produit dans le panier.
+        </td>
+      </tr>
+    `;
 
     totalVente.textContent = "0.00 $";
+
     return;
   }
 
@@ -278,184 +376,157 @@ function afficherPanier() {
 
     total += sousTotal;
 
-    const ligne = document.createElement("tr");
+    const tr = document.createElement("tr");
 
-    ligne.innerHTML = `
-            <td>${echapperHTML(item.produit)}</td>
+    tr.innerHTML = `
 
-            <td>
-                ${Number(item.prix_unitaire).toFixed(2)} $
-            </td>
+        <td>
+          <strong>
+            ${echapperHTML(item.produit)}
+          </strong>
+        </td>
 
-            <td>
-                <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    value="${Number(item.quantite)}"
-                    data-index="${index}"
-                    class="quantite-panier"
-                >
-            </td>
+        <td>
+          ${formaterMontant(item.prix_unitaire)}
+        </td>
 
-            <td>
-                <strong>
-                    ${sousTotal.toFixed(2)} $
-                </strong>
-            </td>
+        <td>
+          ${Number(item.quantite)}
+        </td>
 
-            <td>
-                <button
-                    type="button"
-                    class="bouton-supprimer-panier"
-                    data-index="${index}"
-                >
-                    Supprimer
-                </button>
-            </td>
-        `;
+        <td>
+          <strong>
+            ${formaterMontant(sousTotal)}
+          </strong>
+        </td>
 
-    panierList.appendChild(ligne);
+        <td>
+
+          <button
+            type="button"
+            class="ms-delete"
+            onclick="supprimerDuPanier(${index})"
+          >
+            Supprimer
+          </button>
+
+        </td>
+
+      `;
+
+    panierList.appendChild(tr);
   });
 
-  totalVente.textContent = `${total.toFixed(2)} $`;
-
-  connecterActionsPanier();
+  totalVente.textContent = formaterMontant(total);
 }
 
-// ======================================================
-// ACTIONS DU PANIER
-// ======================================================
+/* =========================================================
+   SUPPRIMER DU PANIER
+   ========================================================= */
 
-function connecterActionsPanier() {
-  const champsQuantite = document.querySelectorAll(".quantite-panier");
+function supprimerDuPanier(index) {
+  if (index < 0 || index >= panier.length) {
+    return;
+  }
 
-  champsQuantite.forEach((champ) => {
-    champ.addEventListener("change", function () {
-      const index = Number(this.dataset.index);
+  panier.splice(index, 1);
 
-      const nouvelleQuantite = Number(this.value);
+  afficherPanier();
 
-      if (!Number.isInteger(nouvelleQuantite) || nouvelleQuantite <= 0) {
-        alert("La quantité doit être un nombre entier supérieur à 0.");
-
-        afficherPanier();
-        return;
-      }
-
-      const item = panier[index];
-
-      const produit = produits.find(
-        (produit) => Number(produit.id) === Number(item.produit_id),
-      );
-
-      if (!produit) {
-        alert("Produit introuvable.");
-        return;
-      }
-
-      if (nouvelleQuantite > Number(produit.stock)) {
-        alert(
-          `Stock insuffisant pour "${produit.nom}".\n\n` +
-            `Stock disponible : ${produit.stock}`,
-        );
-
-        afficherPanier();
-        return;
-      }
-
-      item.quantite = nouvelleQuantite;
-
-      afficherPanier();
-    });
-  });
-
-  const boutonsSupprimer = document.querySelectorAll(
-    ".bouton-supprimer-panier",
-  );
-
-  boutonsSupprimer.forEach((bouton) => {
-    bouton.addEventListener("click", function () {
-      const index = Number(this.dataset.index);
-
-      panier.splice(index, 1);
-
-      afficherPanier();
-      afficherProduitsDansSelect();
-    });
-  });
+  afficherProduitsDansSelect();
 }
 
-// ======================================================
-// ENREGISTRER UNE COMMANDE
-// ======================================================
+/* =========================================================
+   ENREGISTRER UNE VENTE
+   ========================================================= */
 
 async function enregistrerVente(event) {
   event.preventDefault();
 
-  const clientId = Number(clientVente.value);
-
-  if (!clientId) {
+  if (!clientVente.value) {
     alert("Veuillez sélectionner un client.");
+
     return;
   }
 
   if (panier.length === 0) {
-    alert("Veuillez ajouter au moins un produit au panier.");
+    alert("Veuillez ajouter au moins un produit dans le panier.");
+
     return;
   }
 
-  const produitsCommande = panier.map((item) => ({
+  const clientId = Number(clientVente.value);
+
+  const produitsVente = panier.map((item) => ({
     produit_id: Number(item.produit_id),
+
     quantite: Number(item.quantite),
   }));
 
   try {
     const response = await fetch(VENTES_API, {
       method: "POST",
+
+      credentials: "include",
+
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+
       body: JSON.stringify({
         client_id: clientId,
-        produits: produitsCommande,
+
+        produits: produitsVente,
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Impossible d'enregistrer la commande.");
+      throw new Error(data.message || "Impossible d'enregistrer la vente.");
     }
 
-    alert(
-      `Commande #${data.vente?.id || data.id || ""} enregistrée avec succès.`,
-    );
+    alert("✓ Vente enregistrée avec succès.");
 
     panier = [];
+
+    afficherPanier();
 
     venteForm.reset();
 
     quantiteVente.value = 1;
 
-    afficherPanier();
-
     await chargerProduits();
+
     await chargerVentes();
   } catch (error) {
     console.error("Erreur enregistrement vente :", error);
 
-    alert(error.message || "Une erreur est survenue lors de l'enregistrement.");
+    alert(error.message || "Une erreur est survenue.");
   }
 }
 
-// ======================================================
-// CHARGER LES VENTES
-// ======================================================
+/* =========================================================
+   CHARGER LES VENTES
+   ========================================================= */
 
 async function chargerVentes() {
   try {
+    ventesList.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="7"
+          class="ms-cart-empty"
+        >
+          Chargement des ventes...
+        </td>
+
+      </tr>
+
+    `;
+
     const response = await fetch(VENTES_API, {
       credentials: "include",
     });
@@ -466,338 +537,62 @@ async function chargerVentes() {
 
     ventes = await response.json();
 
-    afficherVentes(ventes);
-    mettreAJourStatistiques();
+    afficherStatistiques();
+
+    afficherVentes();
   } catch (error) {
-    console.error("Erreur récupération ventes :", error);
+    console.error("Erreur chargement ventes :", error);
 
     ventesList.innerHTML = `
-            <tr>
-                <td colspan="7">
-                    Impossible de charger les ventes.
-                </td>
-            </tr>
-        `;
-  }
-}
 
-// ======================================================
-// AFFICHER L'HISTORIQUE
-// ======================================================
+      <tr>
 
-function afficherVentes(listeVentes) {
-  ventesList.innerHTML = "";
-
-  if (listeVentes.length === 0) {
-    ventesList.innerHTML = `
-            <tr>
-                <td colspan="7">
-                    Aucune vente enregistrée.
-                </td>
-            </tr>
-        `;
-    return;
-  }
-
-  listeVentes.forEach((vente) => {
-    const ligne = document.createElement("tr");
-
-    const produitsTexte = Array.isArray(vente.produits)
-      ? vente.produits
-          .map(
-            (produit) =>
-              `${echapperHTML(produit.produit)} × ${produit.quantite}`,
-          )
-          .join("<br>")
-      : "Aucun produit";
-
-    const date = vente.date_vente
-      ? new Date(vente.date_vente).toLocaleString("fr-FR")
-      : "-";
-
-    ligne.innerHTML = `
-            <td>
-                <strong>#${vente.id}</strong>
-            </td>
-
-            <td>
-                ${echapperHTML(vente.client || "-")}
-            </td>
-
-            <td>
-                ${produitsTexte}
-            </td>
-
-            <td>
-                <strong>
-                    ${Number(vente.total || 0).toFixed(2)} $
-                </strong>
-            </td>
-
-            <td>
-                ${echapperHTML(vente.vendeur || "-")}
-            </td>
-
-            <td>
-                ${date}
-            </td>
-
-            <td>
-                <button
-                    type="button"
-                    class="bouton-voir-vente"
-                    data-id="${vente.id}"
-                >
-                    Voir
-                </button>
-            </td>
-        `;
-
-    ventesList.appendChild(ligne);
-  });
-
-  document.querySelectorAll(".bouton-voir-vente").forEach((bouton) => {
-    bouton.addEventListener("click", function () {
-      voirDetailsVente(Number(this.dataset.id));
-    });
-  });
-}
-
-// ======================================================
-// DETAIL PROFESSIONNEL D'UNE VENTE
-// ======================================================
-
-function voirDetailsVente(venteId) {
-  const vente = ventes.find((item) => Number(item.id) === venteId);
-
-  if (!vente) {
-    alert("Vente introuvable.");
-    return;
-  }
-
-  const ancienModal = document.getElementById("modalDetailVente");
-
-  if (ancienModal) {
-    ancienModal.remove();
-  }
-
-  const produitsCommande = Array.isArray(vente.produits) ? vente.produits : [];
-
-  const lignesProduits =
-    produitsCommande.length > 0
-      ? produitsCommande
-          .map((produit) => {
-            const sousTotal =
-              Number(produit.sous_total) ||
-              Number(produit.quantite) * Number(produit.prix_unitaire);
-
-            return `
-                        <tr>
-                            <td>
-                                ${echapperHTML(produit.produit)}
-                            </td>
-
-                            <td>
-                                ${Number(produit.prix_unitaire).toFixed(2)} $
-                            </td>
-
-                            <td>
-                                ${Number(produit.quantite)}
-                            </td>
-
-                            <td>
-                                <strong>
-                                    ${sousTotal.toFixed(2)} $
-                                </strong>
-                            </td>
-                        </tr>
-                    `;
-          })
-          .join("")
-      : `
-                <tr>
-                    <td colspan="4">
-                        Aucun produit.
-                    </td>
-                </tr>
-            `;
-
-  const date = vente.date_vente
-    ? new Date(vente.date_vente).toLocaleString("fr-FR")
-    : "-";
-
-  const modal = document.createElement("div");
-
-  modal.id = "modalDetailVente";
-  modal.className = "modal-vente";
-
-  modal.innerHTML = `
-        <div class="modal-vente-overlay"></div>
-
-        <div
-            class="modal-vente-contenu"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="titreDetailVente"
+        <td
+          colspan="7"
+          class="ms-cart-empty"
         >
+          Impossible de charger les ventes.
+        </td>
 
-            <div class="modal-vente-header">
-                <div>
-                    <span class="modal-vente-label">
-                        COMMANDE
-                    </span>
+      </tr>
 
-                    <h2 id="titreDetailVente">
-                        #${vente.id}
-                    </h2>
-                </div>
-
-                <button
-                    type="button"
-                    id="fermerModalVente"
-                    class="modal-vente-fermer"
-                    aria-label="Fermer"
-                >
-                    ×
-                </button>
-            </div>
-
-            <div class="modal-vente-informations">
-
-                <div>
-                    <span>Client</span>
-                    <strong>
-                        ${echapperHTML(vente.client || "-")}
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Vendeur</span>
-                    <strong>
-                        ${echapperHTML(vente.vendeur || "-")}
-                    </strong>
-                </div>
-
-                <div>
-                    <span>Date</span>
-                    <strong>
-                        ${date}
-                    </strong>
-                </div>
-
-            </div>
-
-            <div class="modal-vente-produits">
-
-                <h3>
-                    Produits commandés
-                </h3>
-
-                <div class="modal-table-container">
-
-                    <table>
-
-                        <thead>
-                            <tr>
-                                <th>Produit</th>
-                                <th>Prix unitaire</th>
-                                <th>Quantité</th>
-                                <th>Sous-total</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            ${lignesProduits}
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-            <div class="modal-vente-total">
-
-                <span>
-                    Total de la commande
-                </span>
-
-                <strong>
-                    ${Number(vente.total || 0).toFixed(2)} $
-                </strong>
-
-            </div>
-
-            <div class="modal-vente-footer">
-
-                <button
-                    type="button"
-                    id="boutonFermerDetail"
-                >
-                    Fermer
-                </button>
-
-            </div>
-
-        </div>
     `;
-
-  document.body.appendChild(modal);
-
-  requestAnimationFrame(() => {
-    modal.classList.add("visible");
-  });
-
-  const fermer = () => {
-    modal.classList.remove("visible");
-
-    setTimeout(() => {
-      modal.remove();
-    }, 200);
-  };
-
-  document.getElementById("fermerModalVente").addEventListener("click", fermer);
-
-  document
-    .getElementById("boutonFermerDetail")
-    .addEventListener("click", fermer);
-
-  document
-    .querySelector(".modal-vente-overlay")
-    .addEventListener("click", fermer);
-
-  document.addEventListener("keydown", function fermerAvecEchap(event) {
-    if (event.key === "Escape") {
-      fermer();
-
-      document.removeEventListener("keydown", fermerAvecEchap);
-    }
-  });
+  }
 }
 
-// ======================================================
-// RECHERCHE DES VENTES
-// ======================================================
+/* =========================================================
+   STATISTIQUES
+   ========================================================= */
 
-function rechercherVentes() {
+function afficherStatistiques() {
+  nombreVentes.textContent = ventes.length;
+
+  const chiffre = ventes.reduce(
+    (total, vente) => total + Number(vente.total || 0),
+    0,
+  );
+
+  chiffreAffaires.textContent = formaterMontant(chiffre);
+}
+
+/* =========================================================
+   AFFICHER HISTORIQUE
+   ========================================================= */
+
+function afficherVentes() {
   const recherche = rechercheVente.value.trim().toLowerCase();
 
-  if (!recherche) {
-    afficherVentes(ventes);
-    return;
-  }
-
-  const resultat = ventes.filter((vente) => {
-    const texteProduits = Array.isArray(vente.produits)
-      ? vente.produits.map((produit) => produit.produit).join(" ")
-      : "";
-
+  const ventesFiltrees = ventes.filter((vente) => {
     const texte = [
       vente.id,
+
       vente.client,
+
       vente.vendeur,
-      texteProduits,
-      vente.total,
+
+      vente.date_vente,
+
+      ...(vente.produits || []).map((produit) => produit.produit),
     ]
       .join(" ")
       .toLowerCase();
@@ -805,42 +600,358 @@ function rechercherVentes() {
     return texte.includes(recherche);
   });
 
-  afficherVentes(resultat);
+  ventesList.innerHTML = "";
+
+  if (ventesFiltrees.length === 0) {
+    ventesList.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="7"
+          class="ms-cart-empty"
+        >
+          Aucune vente trouvée.
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+  }
+
+  ventesFiltrees.forEach((vente) => {
+    const tr = document.createElement("tr");
+
+    const nombreProduits = Array.isArray(vente.produits)
+      ? vente.produits.length
+      : 0;
+
+    tr.innerHTML = `
+
+        <td>
+          <span class="ms-sale-id">
+            #${echapperHTML(vente.id)}
+          </span>
+        </td>
+
+
+        <td>
+          <span class="ms-sale-client">
+            ${echapperHTML(vente.client || "Client inconnu")}
+          </span>
+        </td>
+
+
+        <td>
+          ${nombreProduits}
+          produit${nombreProduits > 1 ? "s" : ""}
+        </td>
+
+
+        <td>
+          <span class="ms-sale-total">
+            ${formaterMontant(vente.total)}
+          </span>
+        </td>
+
+
+        <td>
+          ${echapperHTML(vente.vendeur || "—")}
+        </td>
+
+
+        <td>
+          ${formaterDate(vente.date_vente)}
+        </td>
+
+
+        <td>
+
+          <button
+            type="button"
+            class="ms-view"
+            onclick="voirDetailsVente(${Number(vente.id)})"
+          >
+            Voir la facture
+          </button>
+
+        </td>
+
+      `;
+
+    ventesList.appendChild(tr);
+  });
 }
 
-// ======================================================
-// STATISTIQUES
-// ======================================================
+/* =========================================================
+   AFFICHER FACTURE
+   ========================================================= */
 
-function mettreAJourStatistiques() {
-  nombreVentes.textContent = ventes.length;
+function voirDetailsVente(venteId) {
+  const vente = ventes.find((item) => Number(item.id) === Number(venteId));
 
-  const chiffreAffairesTotal = ventes.reduce(
-    (total, vente) => total + Number(vente.total || 0),
-    0,
-  );
+  if (!vente) {
+    alert("Vente introuvable.");
 
-  chiffreAffaires.textContent = `${chiffreAffairesTotal.toFixed(2)} $`;
+    return;
+  }
+
+  const produitsFacture = Array.isArray(vente.produits) ? vente.produits : [];
+
+  let lignesProduits = "";
+
+  produitsFacture.forEach((produit) => {
+    const quantite = Number(produit.quantite || 0);
+
+    const prix = Number(produit.prix_unitaire || 0);
+
+    const sousTotal = Number(produit.sous_total ?? prix * quantite);
+
+    lignesProduits += `
+
+        <tr>
+
+          <td>
+            <strong>
+              ${echapperHTML(produit.produit || "Produit")}
+            </strong>
+          </td>
+
+          <td class="ms-number">
+            ${formaterMontant(prix)}
+          </td>
+
+          <td class="ms-number">
+            ${quantite}
+          </td>
+
+          <td class="ms-number">
+            <strong>
+              ${formaterMontant(sousTotal)}
+            </strong>
+          </td>
+
+        </tr>
+
+      `;
+  });
+
+  contenuFacture.innerHTML = `
+
+
+    <div class="ms-invoice-meta">
+
+
+      <div class="ms-meta-box">
+
+        <span>
+          Numéro de facture
+        </span>
+
+        <strong>
+          #${echapperHTML(vente.id)}
+        </strong>
+
+      </div>
+
+
+      <div class="ms-meta-box">
+
+        <span>
+          Date
+        </span>
+
+        <strong>
+          ${formaterDate(vente.date_vente)}
+        </strong>
+
+      </div>
+
+
+      <div class="ms-meta-box">
+
+        <span>
+          Vendeur
+        </span>
+
+        <strong>
+          ${echapperHTML(vente.vendeur || "—")}
+        </strong>
+
+      </div>
+
+
+      <div class="ms-meta-box">
+
+        <span>
+          Client
+        </span>
+
+        <strong>
+          ${echapperHTML(vente.client || "Client inconnu")}
+        </strong>
+
+      </div>
+
+
+      <div class="ms-meta-box">
+
+        <span>
+          Type de document
+        </span>
+
+        <strong>
+          Vente commerciale
+        </strong>
+
+      </div>
+
+
+      <div class="ms-meta-box">
+
+        <span>
+          Statut
+        </span>
+
+        <strong>
+          Vente enregistrée
+        </strong>
+
+      </div>
+
+
+    </div>
+
+
+    <table class="ms-invoice-table">
+
+      <thead>
+
+        <tr>
+
+          <th>
+            Produit
+          </th>
+
+          <th class="ms-number">
+            Prix unitaire
+          </th>
+
+          <th class="ms-number">
+            Quantité
+          </th>
+
+          <th class="ms-number">
+            Sous-total
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        ${
+          lignesProduits ||
+          `
+            <tr>
+
+              <td
+                colspan="4"
+                style="
+                  text-align:center;
+                  color:#71809d;
+                  padding:25px;
+                "
+              >
+                Aucun produit.
+              </td>
+
+            </tr>
+          `
+        }
+
+      </tbody>
+
+    </table>
+
+
+    <div class="ms-invoice-total">
+
+      <span>
+        Total général
+      </span>
+
+      <strong>
+        ${formaterMontant(vente.total)}
+      </strong>
+
+    </div>
+
+
+    <div class="ms-invoice-footer">
+
+      <span>
+        MYSALES — Gestion commerciale
+      </span>
+
+      <span>
+        Facture générée automatiquement
+      </span>
+
+    </div>
+
+
+  `;
+
+  ouvrirFacture();
 }
 
-// ======================================================
-// SECURITE AFFICHAGE HTML
-// ======================================================
+/* =========================================================
+   OUVRIR FACTURE
+   ========================================================= */
 
-function echapperHTML(texte) {
-  const div = document.createElement("div");
+function ouvrirFacture() {
+  modalVente.classList.add("visible");
 
-  div.textContent = texte === null || texte === undefined ? "" : String(texte);
+  modalVente.setAttribute("aria-hidden", "false");
 
-  return div.innerHTML;
+  document.body.style.overflow = "hidden";
 }
 
-// ======================================================
-// EVENEMENTS
-// ======================================================
+/* =========================================================
+   FERMER FACTURE
+   ========================================================= */
 
-if (rechercheProduit) {
-  rechercheProduit.addEventListener("input", afficherProduitsDansSelect);
+function fermerFacture() {
+  modalVente.classList.remove("visible");
+
+  modalVente.setAttribute("aria-hidden", "true");
+
+  document.body.style.overflow = "";
+}
+
+/* =========================================================
+   IMPRESSION
+   ========================================================= */
+
+function imprimerFacture() {
+  window.print();
+}
+
+/* =========================================================
+   ÉVÉNEMENTS
+   ========================================================= */
+
+if (boutonAjouterPanier) {
+  boutonAjouterPanier.addEventListener("click", ajouterAuPanier);
+}
+
+if (venteForm) {
+  venteForm.addEventListener("submit", enregistrerVente);
 }
 
 if (produitVente) {
@@ -851,35 +962,58 @@ if (quantiteVente) {
   quantiteVente.addEventListener("input", calculerSousTotal);
 }
 
-if (boutonAjouterPanier) {
-  boutonAjouterPanier.addEventListener("click", ajouterAuPanier);
-}
-
-if (venteForm) {
-  venteForm.addEventListener("submit", enregistrerVente);
+if (rechercheProduit) {
+  rechercheProduit.addEventListener("input", afficherProduitsDansSelect);
 }
 
 if (rechercheVente) {
-  rechercheVente.addEventListener("input", rechercherVentes);
+  rechercheVente.addEventListener("input", afficherVentes);
 }
 
 if (boutonActualiser) {
-  boutonActualiser.addEventListener("click", async function () {
+  boutonActualiser.addEventListener("click", async () => {
+    await chargerClients();
+
     await chargerProduits();
+
     await chargerVentes();
   });
 }
 
-// ======================================================
-// DEMARRAGE
-// ======================================================
-
-async function initialiserPageVentes() {
-  await chargerClients();
-  await chargerProduits();
-  await chargerVentes();
-
-  afficherPanier();
+if (fermerModalVente) {
+  fermerModalVente.addEventListener("click", fermerFacture);
 }
 
-initialiserPageVentes();
+if (boutonFermerFacture) {
+  boutonFermerFacture.addEventListener("click", fermerFacture);
+}
+
+if (modalOverlay) {
+  modalOverlay.addEventListener("click", fermerFacture);
+}
+
+if (boutonImprimerFacture) {
+  boutonImprimerFacture.addEventListener("click", imprimerFacture);
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && modalVente.classList.contains("visible")) {
+    fermerFacture();
+  }
+});
+
+/* =========================================================
+   INITIALISATION
+   ========================================================= */
+
+async function initialiserVentes() {
+  await chargerClients();
+
+  await chargerProduits();
+
+  afficherPanier();
+
+  await chargerVentes();
+}
+
+initialiserVentes();

@@ -1,484 +1,387 @@
-const UTILISATEURS_API = "/api/utilisateurs";
+const API = "/api/utilisateurs";
 
-const utilisateurForm = document.getElementById("utilisateurForm");
+const formulaire = document.getElementById("utilisateurForm");
 
-const nomUtilisateurForm = document.getElementById(
-    "nomUtilisateurForm"
-);
+const zoneFormulaire = document.getElementById("formulaireUtilisateur");
 
-const emailUtilisateur = document.getElementById(
-    "emailUtilisateur"
-);
+const liste = document.getElementById("listeUtilisateurs");
 
-const motDePasseUtilisateur = document.getElementById(
-    "motDePasseUtilisateur"
-);
+const compteur = document.getElementById("compteurUtilisateurs");
 
-const roleUtilisateurForm = document.getElementById(
-    "roleUtilisateurForm"
-);
+const nom = document.getElementById("nomUtilisateurForm");
 
-const utilisateursList = document.getElementById(
-    "utilisateursList"
-);
+const email = document.getElementById("emailUtilisateur");
 
-const boutonUtilisateur = document.getElementById(
-    "boutonUtilisateur"
-);
+const motDePasse = document.getElementById("motDePasseUtilisateur");
 
-const boutonAnnulerUtilisateur = document.getElementById(
-    "boutonAnnulerUtilisateur"
-);
-
-const titreFormulaireUtilisateur = document.getElementById(
-    "titreFormulaireUtilisateur"
-);
-
-let utilisateurs = [];
+const role = document.getElementById("roleUtilisateurForm");
 
 let utilisateurEnModification = null;
 
+// ======================================================
+// PROTECTION HTML
+// ======================================================
+
+function protegerTexte(texte) {
+  return String(texte || "").replace(/[&<>'"]/g, function (caractere) {
+    const caracteres = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;",
+    };
+
+    return caracteres[caractere];
+  });
+}
 
 // ======================================================
 // CHARGER LES UTILISATEURS
 // ======================================================
 
 async function chargerUtilisateurs() {
+  try {
+    const sessionResponse = await fetch("/api/session", {
+      credentials: "include",
+    });
 
-    try {
+    const session = await sessionResponse.json();
 
-        const response = await fetch(
-            UTILISATEURS_API,
-            {
-                credentials: "include"
-            }
-        );
+    if (!sessionResponse.ok || !session.connecte) {
+      window.location.href = "/login.html";
 
-        const data = await response.json();
+      return;
+    }
 
-        if (!response.ok) {
-            throw new Error(
-                data.message ||
-                "Impossible de récupérer les utilisateurs."
-            );
-        }
+    if (session.utilisateur.role !== "admin") {
+      window.location.href = "/index.html";
 
-        utilisateurs = data;
+      return;
+    }
 
-        afficherUtilisateurs(utilisateurs);
+    const response = await fetch(API, {
+      credentials: "include",
+    });
 
-    } catch (error) {
+    const data = await response.json();
 
-        console.error(
-            "Erreur utilisateurs :",
-            error
-        );
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Impossible de charger les utilisateurs.",
+      );
+    }
 
-        utilisateursList.innerHTML = `
+    afficherUtilisateurs(data);
+  } catch (error) {
+    console.error("Erreur utilisateurs :", error);
+
+    liste.innerHTML = `
             <tr>
-                <td colspan="6">
-                    ${error.message}
+                <td colspan="5">
+                    Impossible de charger les utilisateurs.
                 </td>
             </tr>
         `;
-    }
+  }
 }
-
 
 // ======================================================
 // AFFICHER LES UTILISATEURS
 // ======================================================
 
-function afficherUtilisateurs(listeUtilisateurs) {
+function afficherUtilisateurs(utilisateurs) {
+  if (!Array.isArray(utilisateurs)) {
+    utilisateurs = [];
+  }
 
-    utilisateursList.innerHTML = "";
+  compteur.textContent = `${utilisateurs.length} utilisateur${
+    utilisateurs.length > 1 ? "s" : ""
+  }`;
 
-    if (listeUtilisateurs.length === 0) {
-
-        utilisateursList.innerHTML = `
+  if (utilisateurs.length === 0) {
+    liste.innerHTML = `
             <tr>
-                <td colspan="6">
-                    Aucun utilisateur trouvé.
+                <td colspan="5">
+                    Aucun utilisateur.
                 </td>
             </tr>
         `;
 
-        return;
-    }
+    return;
+  }
 
-    listeUtilisateurs.forEach(function (utilisateur) {
+  liste.innerHTML = utilisateurs
+    .map(function (utilisateur) {
+      const roleAffiche =
+        utilisateur.role === "admin" ? "Administrateur" : "Vendeur";
 
-        const ligne = document.createElement("tr");
+      const date = utilisateur.date_creation
+        ? new Date(utilisateur.date_creation).toLocaleDateString("fr-FR")
+        : "-";
 
-        const date = new Date(
-            utilisateur.date_creation
-        ).toLocaleDateString("fr-FR");
+      return `
+                    <tr>
 
-        const role =
-            utilisateur.role === "admin"
-                ? "Administrateur"
-                : "Vendeur";
+                        <td>
+                            <strong>
+                                ${protegerTexte(utilisateur.nom)}
+                            </strong>
+                        </td>
 
-        ligne.innerHTML = `
-            <td>${utilisateur.id}</td>
 
-            <td>${utilisateur.nom}</td>
+                        <td>
+                            ${protegerTexte(utilisateur.email)}
+                        </td>
 
-            <td>${utilisateur.email}</td>
 
-            <td>${role}</td>
+                        <td>
+                            <span class="status ${
+                              utilisateur.role === "admin"
+                                ? "success"
+                                : "warning"
+                            }">
+                                ${roleAffiche}
+                            </span>
+                        </td>
 
-            <td>${date}</td>
 
-            <td>
+                        <td>
+                            ${date}
+                        </td>
 
-                <button
-                    type="button"
-                    onclick="modifierUtilisateur(${utilisateur.id})">
 
-                    Modifier
+                        <td>
 
-                </button>
+                            <button
+                                class="icon-btn"
+                                type="button"
+                                onclick="modifierUtilisateur(${utilisateur.id})"
+                            >
+                                Modifier
+                            </button>
 
-                <button
-                    type="button"
-                    onclick="supprimerUtilisateur(${utilisateur.id})">
 
-                    Supprimer
+                            <button
+                                class="icon-btn danger-btn"
+                                type="button"
+                                onclick="supprimerUtilisateur(${utilisateur.id})"
+                            >
+                                Supprimer
+                            </button>
 
-                </button>
+                        </td>
 
-            </td>
-        `;
-
-        utilisateursList.appendChild(ligne);
-    });
+                    </tr>
+                `;
+    })
+    .join("");
 }
 
-
 // ======================================================
-// AJOUT / MODIFICATION
-// ======================================================
-
-utilisateurForm.addEventListener(
-    "submit",
-    async function (event) {
-
-        event.preventDefault();
-
-        const nom = nomUtilisateurForm.value.trim();
-
-        const email =
-            emailUtilisateur.value.trim();
-
-        const mot_de_passe =
-            motDePasseUtilisateur.value;
-
-        const role =
-            roleUtilisateurForm.value;
-
-
-        if (!nom || !email || !role) {
-
-            alert(
-                "Veuillez remplir tous les champs obligatoires."
-            );
-
-            return;
-        }
-
-
-        if (
-            !utilisateurEnModification &&
-            mot_de_passe.length < 6
-        ) {
-
-            alert(
-                "Le mot de passe doit contenir au moins 6 caractères."
-            );
-
-            return;
-        }
-
-
-        if (
-            utilisateurEnModification &&
-            mot_de_passe !== "" &&
-            mot_de_passe.length < 6
-        ) {
-
-            alert(
-                "Le mot de passe doit contenir au moins 6 caractères."
-            );
-
-            return;
-        }
-
-
-        const donnees = {
-            nom: nom,
-            email: email,
-            mot_de_passe: mot_de_passe,
-            role: role
-        };
-
-
-        try {
-
-            let response;
-
-
-            if (utilisateurEnModification) {
-
-                response = await fetch(
-                    `${UTILISATEURS_API}/${utilisateurEnModification}`,
-                    {
-                        method: "PUT",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        credentials: "include",
-
-                        body: JSON.stringify(donnees)
-                    }
-                );
-
-            } else {
-
-                response = await fetch(
-                    UTILISATEURS_API,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        credentials: "include",
-
-                        body: JSON.stringify(donnees)
-                    }
-                );
-            }
-
-
-            const data =
-                await response.json();
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.message ||
-                    "Une erreur est survenue."
-                );
-            }
-
-
-            if (utilisateurEnModification) {
-
-                alert(
-                    "Utilisateur modifié avec succès !"
-                );
-
-            } else {
-
-                alert(
-                    "Utilisateur créé avec succès !"
-                );
-            }
-
-
-            annulerModification();
-
-            await chargerUtilisateurs();
-
-
-        } catch (error) {
-
-            console.error(
-                "Erreur utilisateur :",
-                error
-            );
-
-            alert(error.message);
-        }
-    }
-);
-
-
-// ======================================================
-// MODIFIER
+// NOUVEL UTILISATEUR
 // ======================================================
 
-function modifierUtilisateur(id) {
+document
+  .getElementById("btnNouvelUtilisateur")
+  .addEventListener("click", function () {
+    utilisateurEnModification = null;
 
-    const utilisateur =
-        utilisateurs.find(
-            function (item) {
-                return item.id === id;
-            }
-        );
+    formulaire.reset();
 
+    motDePasse.required = true;
 
-    if (!utilisateur) {
+    zoneFormulaire.hidden = false;
 
-        alert(
-            "Utilisateur introuvable."
-        );
+    document.getElementById("titreFormulaire").textContent =
+      "Ajouter un utilisateur";
 
-        return;
-    }
-
-
-    nomUtilisateurForm.value =
-        utilisateur.nom;
-
-    emailUtilisateur.value =
-        utilisateur.email;
-
-    motDePasseUtilisateur.value =
-        "";
-
-    roleUtilisateurForm.value =
-        utilisateur.role;
-
-
-    utilisateurEnModification =
-        id;
-
-
-    titreFormulaireUtilisateur.textContent =
-        "Modifier un utilisateur";
-
-    boutonUtilisateur.textContent =
-        "Modifier l'utilisateur";
-
-    boutonAnnulerUtilisateur.style.display =
-        "inline-block";
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
+    document.getElementById("btnEnregistrerUtilisateur").textContent =
+      "Enregistrer";
+  });
 
 // ======================================================
 // ANNULER
 // ======================================================
 
-function annulerModification() {
+document
+  .getElementById("btnAnnulerUtilisateur")
+  .addEventListener("click", function () {
+    utilisateurEnModification = null;
 
-    utilisateurForm.reset();
+    formulaire.reset();
 
-    utilisateurEnModification =
-        null;
+    motDePasse.required = false;
 
-    titreFormulaireUtilisateur.textContent =
-        "Ajouter un utilisateur";
+    zoneFormulaire.hidden = true;
+  });
 
-    boutonUtilisateur.textContent =
-        "Enregistrer l'utilisateur";
+// ======================================================
+// MODIFIER
+// ======================================================
 
-    boutonAnnulerUtilisateur.style.display =
-        "none";
-}
+window.modifierUtilisateur = async function (id) {
+  try {
+    const response = await fetch(API, {
+      credentials: "include",
+    });
 
+    const utilisateurs = await response.json();
 
-boutonAnnulerUtilisateur.addEventListener(
-    "click",
-    function () {
+    const utilisateur = utilisateurs.find(function (element) {
+      return element.id === id;
+    });
 
-        annulerModification();
-
+    if (!utilisateur) {
+      return;
     }
-);
 
+    utilisateurEnModification = id;
+
+    nom.value = utilisateur.nom;
+
+    email.value = utilisateur.email;
+
+    role.value = utilisateur.role;
+
+    motDePasse.value = "";
+
+    motDePasse.required = false;
+
+    zoneFormulaire.hidden = false;
+
+    document.getElementById("titreFormulaire").textContent =
+      "Modifier un utilisateur";
+
+    document.getElementById("btnEnregistrerUtilisateur").textContent =
+      "Enregistrer les modifications";
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  } catch (error) {
+    console.error(error);
+
+    alert("Impossible de modifier cet utilisateur.");
+  }
+};
 
 // ======================================================
 // SUPPRIMER
 // ======================================================
 
-async function supprimerUtilisateur(id) {
+window.supprimerUtilisateur = async function (id) {
+  const confirmation = confirm(
+    "Voulez-vous vraiment supprimer cet utilisateur ?",
+  );
 
-    const utilisateur =
-        utilisateurs.find(
-            function (item) {
-                return item.id === id;
-            }
-        );
+  if (!confirmation) {
+    return;
+  }
 
+  try {
+    const response = await fetch(`${API}/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
 
-    if (!utilisateur) {
+    const data = await response.json();
 
-        alert(
-            "Utilisateur introuvable."
-        );
-
-        return;
+    if (!response.ok) {
+      throw new Error(data.message || "Impossible de supprimer l'utilisateur.");
     }
 
+    alert(data.message || "Utilisateur supprimé avec succès.");
 
-    const confirmation = confirm(
-        `Voulez-vous vraiment supprimer l'utilisateur "${utilisateur.nom}" ?`
-    );
+    await chargerUtilisateurs();
+  } catch (error) {
+    console.error("Erreur suppression :", error);
 
+    alert(error.message);
+  }
+};
 
-    if (!confirmation) {
-        return;
+// ======================================================
+// ENREGISTRER
+// ======================================================
+
+formulaire.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const donnees = {
+    nom: nom.value.trim(),
+
+    email: email.value.trim(),
+
+    role: role.value,
+  };
+
+  if (motDePasse.value.trim()) {
+    donnees.mot_de_passe = motDePasse.value;
+  }
+
+  if (!utilisateurEnModification && !motDePasse.value.trim()) {
+    alert("Veuillez saisir un mot de passe.");
+
+    return;
+  }
+
+  try {
+    let response;
+
+    if (utilisateurEnModification) {
+      response = await fetch(`${API}/${utilisateurEnModification}`, {
+        method: "PUT",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        credentials: "include",
+
+        body: JSON.stringify(donnees),
+      });
+    } else {
+      response = await fetch(API, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        credentials: "include",
+
+        body: JSON.stringify({
+          ...donnees,
+          mot_de_passe: motDePasse.value,
+        }),
+      });
     }
 
+    const data = await response.json();
 
-    try {
-
-        const response =
-            await fetch(
-                `${UTILISATEURS_API}/${id}`,
-                {
-                    method: "DELETE",
-                    credentials: "include"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "Impossible de supprimer l'utilisateur."
-            );
-        }
-
-
-        alert(
-            "Utilisateur supprimé avec succès !"
-        );
-
-
-        await chargerUtilisateurs();
-
-
-    } catch (error) {
-
-        console.error(
-            "Erreur suppression :",
-            error
-        );
-
-        alert(error.message);
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Impossible d'enregistrer l'utilisateur.",
+      );
     }
-}
 
+    alert(data.message || "Utilisateur enregistré avec succès.");
+
+    formulaire.reset();
+
+    zoneFormulaire.hidden = true;
+
+    utilisateurEnModification = null;
+
+    await chargerUtilisateurs();
+  } catch (error) {
+    console.error("Erreur enregistrement utilisateur :", error);
+
+    alert(error.message);
+  }
+});
 
 // ======================================================
 // DÉMARRAGE

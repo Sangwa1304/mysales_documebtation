@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Facture — MYSALES</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      body {
+        background: #f1f5f9;
+      }
+
+      .facture-container {
+        max-width: 950px;
+        margin: 35px auto;
+        padding: 20px;
+      }
+
+      .facture-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .facture-actions-buttons {
+        display: flex;
+        gap: 10px;
+      }
+
+      .facture-document {
+        background: white;
+        padding: 55px;
+        box-shadow: 0 15px 50px rgba(15, 23, 42, 0.1);
+      }
+
+      .facture-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #0f172a;
+      }
+
+      .facture-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .facture-logo {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #2563eb;
+        color: white;
+        border-radius: 12px;
+        font-size: 23px;
+        font-weight: 900;
+      }
+
+      .facture-brand strong {
+        display: block;
+        font-size: 25px;
+      }
+
+      .facture-brand span {
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      .facture-title {
+        text-align: right;
+      }
+
+      .facture-title h1 {
+        margin: 0;
+        color: #2563eb;
+        font-size: 32px;
+      }
+
+      .facture-title p {
+        margin: 5px 0;
+        color: #64748b;
+      }
+
+      .facture-infos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+        margin: 30px 0;
+      }
+
+      .facture-info {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .facture-info small {
+        display: block;
+        color: #64748b;
+        font-size: 11px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .facture-info strong {
+        display: block;
+        color: #0f172a;
+        margin-bottom: 6px;
+      }
+
+      .facture-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .facture-table th {
+        background: #0f172a;
+        color: white;
+        padding: 13px;
+        text-align: left;
+        font-size: 12px;
+      }
+
+      .facture-table td {
+        padding: 14px 13px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+
+      .facture-total {
+        width: 320px;
+        margin-left: auto;
+        margin-top: 25px;
+      }
+
+      .facture-total-line {
+        display: flex;
+        justify-content: space-between;
+        padding: 9px 0;
+      }
+
+      .facture-total-final {
+        border-top: 2px solid #0f172a;
+        margin-top: 8px;
+        padding-top: 14px;
+        font-size: 21px;
+        font-weight: 900;
+      }
+
+      .facture-footer {
+        margin-top: 55px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+      }
+
+      @media (max-width: 700px) {
+        .facture-document {
+          padding: 25px;
+        }
+
+        .facture-header {
+          flex-direction: column;
+        }
+
+        .facture-title {
+          text-align: left;
+        }
+
+        .facture-infos {
+          grid-template-columns: 1fr;
+        }
+
+        .facture-total {
+          width: 100%;
+        }
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+
+        .facture-container {
+          margin: 0;
+          max-width: none;
+          padding: 0;
+        }
+
+        .facture-actions {
+          display: none;
+        }
+
+        .facture-document {
+          box-shadow: none;
+          padding: 20px;
+        }
+
+        @page {
+          size: A4;
+          margin: 12mm;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="facture-container">
+      <div class="facture-actions">
+        <h2>Facture</h2>
+
+        <div class="facture-actions-buttons">
+          <button id="boutonRetour" class="btn btn-light">Retour</button>
+
+          <button id="boutonImprimer" class="btn btn-primary">
+            Imprimer / PDF
+          </button>
+        </div>
+      </div>
+
+      <section id="conteneurFacture">Chargement...</section>
+    </main>
+
+    <script src="facture.js"></script>
+  </body>
+</html>
